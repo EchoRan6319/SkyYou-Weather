@@ -56,14 +56,20 @@ const LocationsPage: React.FC<Props> = ({ locations, currentLocationId, onSelect
                 autoFocus
                 type="text"
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
                 placeholder={t.searchPlaceholder}
                 className="flex-1 bg-transparent outline-none text-gray-800 placeholder-gray-400"
               />
               {isSearchingApi ? (
                 <Loader2 size={18} className="animate-spin text-gray-400" />
               ) : (
-                <button onClick={() => { setIsSearching(false); setQuery(''); }} className="p-2">
+                <button 
+                  type="button"
+                  aria-label="关闭搜索"
+                  title="关闭搜索"
+                  onClick={() => { setIsSearching(false); setQuery(''); }} 
+                  className="p-2"
+                >
                    <X size={20} className="text-gray-500" />
                 </button>
               )}
@@ -72,6 +78,9 @@ const LocationsPage: React.FC<Props> = ({ locations, currentLocationId, onSelect
           <>
             <h1 className="text-3xl font-medium text-gray-900">{t.manageLocations}</h1>
             <button 
+              type="button"
+              aria-label="添加城市"
+              title="添加城市"
               onClick={() => setIsSearching(true)}
               className="w-12 h-12 rounded-2xl bg-[#d3e3fd] text-[#041e49] flex items-center justify-center hover:shadow-md transition-all active:scale-95"
             >
@@ -90,7 +99,7 @@ const LocationsPage: React.FC<Props> = ({ locations, currentLocationId, onSelect
              {searchResults.length === 0 && query.length > 1 && !isSearchingApi && (
                 <div className="text-center text-gray-400 py-8">{t.unknown}</div>
              )}
-             {searchResults.map((loc) => (
+             {searchResults.map((loc: WeatherLocation) => (
                <div 
                  key={loc.id}
                  onClick={() => handleSelectResult(loc)}
@@ -104,7 +113,7 @@ const LocationsPage: React.FC<Props> = ({ locations, currentLocationId, onSelect
         )}
 
         {/* Saved Locations List */}
-        {!isSearching && locations.map((loc) => {
+        {!isSearching && locations.map((loc: WeatherLocation) => {
             const isSelected = loc.id === currentLocationId;
             return (
                 <div 
@@ -129,7 +138,10 @@ const LocationsPage: React.FC<Props> = ({ locations, currentLocationId, onSelect
                     
                     {!loc.isCurrentLocation && (
                         <button 
-                            onClick={(e) => {
+                            type="button"
+                            aria-label="删除城市"
+                            title="删除城市"
+                            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                                 e.stopPropagation();
                                 onDelete(loc.id);
                             }}

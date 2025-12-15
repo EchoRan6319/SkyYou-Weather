@@ -41,7 +41,12 @@ const WeatherAlerts: React.FC<Props> = ({ alerts }) => {
              </p>
            </div>
         </div>
-        <button className={`p-1 rounded-full hover:bg-white/30 ${textColor}`}>
+        <button 
+          type="button" 
+          aria-label={expanded ? "收起预警详情" : "展开预警详情"} 
+          title={expanded ? "收起预警详情" : "展开预警详情"} 
+          className={`p-1 rounded-full hover:bg-white/30 ${textColor}`}
+        >
             {expanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
         </button>
       </div>
