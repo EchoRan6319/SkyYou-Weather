@@ -3,9 +3,8 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <meta name="theme-color" content="#fdfcff" />
-    <meta name="color-scheme" content="light dark" />
     <title>SkyYou Weather</title>
     <link rel="icon" type="image/png" href="/icon.png" />
     <link rel="apple-touch-icon" href="/icon.png">
@@ -25,11 +24,7 @@
       /* Hide scrollbar for IE, Edge and Firefox */
       .no-scrollbar {
           -ms-overflow-style: none;  /* IE and Edge */
-      }
-      @supports (scrollbar-width: none) {
-        .no-scrollbar {
-          scrollbar-width: none;
-        }
+          scrollbar-width: none;  /* Firefox */
       }
 
       /* Custom Animations for Loading Screen */
@@ -69,6 +64,7 @@
   }
 }
 </script>
+<link rel="stylesheet" href="/index.css">
 </head>
   <body>
     <div id="root"></div>

@@ -1,5 +1,5 @@
 
-import { CAIYUN_API_KEY, OPENWEATHER_API_KEY, AMAP_API_KEY } from '../constants';
+import { CAIYUN_API_KEY, OPENWEATHER_API_KEY } from '../constants';
 import { Coordinates, WeatherData, Language, WeatherIconType, WeatherLocation, WeatherAlert } from '../types';
 
 /**
@@ -201,11 +201,6 @@ interface LocationName {
  * REVERSE GEOCODING - OSM Implementation (Default)
  */
 export const reverseGeocode = async (coords: Coordinates, lang: Language): Promise<LocationName> => {
-    // Prefer Amap for Chinese users when key is provided
-    if (lang === Language.ZH && AMAP_API_KEY) {
-        const amap = await reverseGeocodeAmap(coords);
-        if (amap.city || amap.district) return amap;
-    }
     try {
         const localeParam = lang === Language.ZH ? 'zh-CN' : 'en';
         // Use a different OSM server if needed, or stick to standard.
@@ -224,10 +219,18 @@ export const reverseGeocode = async (coords: Coordinates, lang: Language): Promi
 
         if (lang === Language.ZH) {
             city = addr.city || addr.municipality || addr.state || "";
-            district = addr.district || addr.county || addr.town || addr.city_district || addr.suburb || "";
+            district = addr.district || addr.county || addr.town || "";
+            
+            if (district && (district.includes(city) || city.includes(district))) {
+               // clean redundancy if needed
+            }
+            if (!city && district) {
+                city = district;
+                district = "";
+            }
         } else {
-            city = addr.city || addr.town || "Unknown";
-            district = addr.district || addr.county || addr.state || "";
+             city = addr.city || addr.town || "Unknown";
+             district = addr.district || "";
         }
 
         return { city, district };
@@ -238,44 +241,15 @@ export const reverseGeocode = async (coords: Coordinates, lang: Language): Promi
     }
 };
 
-const reverseGeocodeAmap = async (coords: Coordinates): Promise<LocationName> => {
-  try {
-    const url = `https://restapi.amap.com/v3/geocode/regeo?location=${coords.lon},${coords.lat}&key=${AMAP_API_KEY}&extensions=base`;
-    const res = await fetch(url);
-    if (!res.ok) throw new Error('AMap Reverse Geocode Error');
-    const data = await res.json();
-    const ac = data?.regeocode?.addressComponent || {};
-    const rawCity = ac.city;
-    let city: string = Array.isArray(rawCity) ? (rawCity[0] || "") : (rawCity || "");
-    const province: string = ac.province || "";
-    const rawDistrict = ac.district;
-    const rawTownship = ac.township;
-    let district: string = Array.isArray(rawDistrict) ? (rawDistrict[0] || "") : (rawDistrict || "");
-    if (!district) {
-      district = Array.isArray(rawTownship) ? (rawTownship[0] || "") : (rawTownship || "");
-    }
-    if (!city && province && /市$/.test(province)) city = province; // 直辖市提升
-    return { city, district };
-  } catch (e) {
-    return { city: "", district: "" };
-  }
-};
-
 /**
  * SEARCH CITY - OSM Implementation (Default)
  */
-export const searchCity = async (query: string, lang: Language, signal?: AbortSignal): Promise<WeatherLocation[]> => {
-    // Prefer Amap for Chinese users when key is provided
-    if (lang === Language.ZH && AMAP_API_KEY) {
-        const amapResults = await searchCityAmap(query, signal);
-        if (amapResults.length > 0) return amapResults;
-    }
+export const searchCity = async (query: string, lang: Language): Promise<WeatherLocation[]> => {
     if (!query || query.length < 2) return [];
     try {
       const localeParam = lang === Language.ZH ? 'zh-CN' : 'en';
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=8&accept-language=${localeParam}&addressdetails=1`,
-        { signal }
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=8&accept-language=${localeParam}&addressdetails=1`
       );
       if (!response.ok) return [];
       
@@ -286,10 +260,10 @@ export const searchCity = async (query: string, lang: Language, signal?: AbortSi
         let district = "";
         if (lang === Language.ZH) {
             name = addr.city || addr.municipality || addr.state || item.display_name.split(',')[0];
-            district = addr.district || addr.county || addr.town || addr.city_district || addr.suburb || "";
+            district = addr.district || addr.county || addr.town || "";
         } else {
             name = addr.city || addr.town || item.display_name.split(',')[0];
-            district = addr.district || addr.county || addr.state || "";
+            district = addr.state || addr.country || "";
         }
         return {
           id: `loc_${item.place_id}`,
@@ -305,54 +279,6 @@ export const searchCity = async (query: string, lang: Language, signal?: AbortSi
     }
 };
 
-const searchCityAmap = async (query: string, signal?: AbortSignal): Promise<WeatherLocation[]> => {
-  if (!query || query.length < 2) return [];
-  try {
-    const url = `https://restapi.amap.com/v3/geocode/geo?address=${encodeURIComponent(query)}&key=${AMAP_API_KEY}`;
-    const res = await fetch(url, { signal });
-    if (!res.ok) return [];
-    const data = await res.json();
-    const geocodes = data?.geocodes || [];
-    return geocodes
-      .filter((g: any) => typeof g.location === 'string' && g.location.includes(','))
-      .map((g: any, idx: number) => {
-        const [lonStr, latStr] = g.location.split(',');
-        const rawCity = g.city;
-        const city: string = Array.isArray(rawCity) ? (rawCity[0] || '') : (rawCity || g.province || '');
-        const rawDistrict = g.district;
-        const district: string = Array.isArray(rawDistrict) ? (rawDistrict[0] || '') : (rawDistrict || '');
-        return {
-          id: `amap_${g.adcode || `${query}_${idx}`}`,
-          name: city,
-          district: district,
-          coords: { lat: parseFloat(latStr), lon: parseFloat(lonStr) },
-          isCurrentLocation: false
-        } as WeatherLocation;
-      });
-  } catch (e) {
-    return [];
-  }
-};
-
-export const formatCityDistrict = (city: string, district?: string): string => {
-  const municipalities = new Set<string>(['北京市','上海市','天津市','重庆市','香港特别行政区','澳门特别行政区']);
-  const genericDistricts = new Set<string>(['市辖区','直辖县级行政区','城区','郊区','辖区']);
-  const norm = (s?: string) => (s || '').replace(/　/g, ' ').trim().replace(/\s+/g, ' ');
-  let c = norm(city);
-  let d = norm(district);
-  if (!c && d && /市$/.test(d)) { c = d; d = ''; }
-  if (d && genericDistricts.has(d)) { d = ''; }
-  if (c && municipalities.has(c) && !d) { d = ''; }
-  if (c && d) {
-    const cNoSuffix = c.replace(/市$/, '');
-    const dNoSuffix = d.replace(/市$/, '');
-    if (c === d || cNoSuffix === dNoSuffix || d.includes(c) || c.includes(d)) { d = ''; }
-  }
-  if (!c && !d) return "";
-  if (!d) return c;
-  if (!c) return d;
-  return `${c}+${d}`;
-};
 // --- API FETCHERS ---
 
 const fetchOpenWeatherPollution = async (coords: Coordinates, lang: Language, apiKey: string): Promise<{aqi: number, description: string} | null> => {
