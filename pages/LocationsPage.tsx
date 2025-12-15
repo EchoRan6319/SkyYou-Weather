@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { WeatherLocation, Language, LocationService } from '../types';
+import { WeatherLocation, Language } from '../types';
 import { TRANSLATIONS } from '../constants';
 import { Plus, Navigation, Trash2, Search, X, Loader2 } from 'lucide-react';
 import { searchCity } from '../services/weatherService';
@@ -12,10 +12,9 @@ interface Props {
   onDelete: (id: string) => void;
   onAdd: (location: WeatherLocation) => void;
   lang: Language;
-  locationService: LocationService;
 }
 
-const LocationsPage: React.FC<Props> = ({ locations, currentLocationId, onSelect, onDelete, onAdd, lang, locationService }) => {
+const LocationsPage: React.FC<Props> = ({ locations, currentLocationId, onSelect, onDelete, onAdd, lang }) => {
   const t = TRANSLATIONS[lang];
   
   // Search State
@@ -29,7 +28,7 @@ const LocationsPage: React.FC<Props> = ({ locations, currentLocationId, onSelect
     const timer = setTimeout(async () => {
       if (query.length > 1) {
         setIsSearchingApi(true);
-        const results = await searchCity(query, lang, locationService);
+        const results = await searchCity(query, lang);
         setSearchResults(results);
         setIsSearchingApi(false);
       } else {
@@ -37,7 +36,7 @@ const LocationsPage: React.FC<Props> = ({ locations, currentLocationId, onSelect
       }
     }, 500);
     return () => clearTimeout(timer);
-  }, [query, lang, locationService]);
+  }, [query, lang]);
 
   const handleSelectResult = (loc: WeatherLocation) => {
     onAdd(loc);

@@ -1,5 +1,5 @@
 
-import { WeatherLocation, AppSettings, Language, AppTheme, LocationService } from './types';
+import { WeatherLocation, AppSettings, Language, AppTheme } from './types';
 
 // ============================================================================
 // API CONFIGURATION
@@ -8,7 +8,6 @@ import { WeatherLocation, AppSettings, Language, AppTheme, LocationService } fro
 // ============================================================================
 export const CAIYUN_API_KEY = "19o10LzcwHoF3FJY"; // Enter your Caiyun Token
 export const OPENWEATHER_API_KEY = "9393c55a6a2bccb1c47d368d0c42bfba"; // Enter your OpenWeather Key
-export const TENCENT_MAP_API_KEY = "SKZBZ-K5Krd-N4W4X-PI623-73N7S-SMF5M"; // Key for demo/testing. Replace with your own if needed.
 
 // ============================================================================
 // LOCALIZATION
@@ -31,9 +30,6 @@ export const TRANSLATIONS = {
     unit: "Unit",
     language: "Language",
     theme: "Theme",
-    locationService: "Location Service",
-    serviceTencent: "Tencent Maps (Recommended for China)",
-    serviceOsm: "OpenStreetMap (Global)",
     about: "About",
     goodMorning: "Good Morning",
     goodAfternoon: "Good Afternoon",
@@ -65,7 +61,8 @@ export const TRANSLATIONS = {
     precipWarning: "Precipitation Warning",
     precipWarningDesc: "Rain or snow expected in the next 2 hours.",
     morningReportTitle: "Morning Forecast",
-    eveningReportTitle: "Tomorrow's Forecast"
+    eveningReportTitle: "Tomorrow's Forecast",
+    permissionDenied: "Notification permission denied. Please enable in browser settings."
   },
   [Language.ZH]: {
     home: "首页",
@@ -84,9 +81,6 @@ export const TRANSLATIONS = {
     unit: "单位",
     language: "语言",
     theme: "主题",
-    locationService: "定位服务",
-    serviceTencent: "腾讯地图 (国内推荐)",
-    serviceOsm: "OpenStreetMap (全球)",
     about: "关于",
     goodMorning: "早上好",
     goodAfternoon: "下午好",
@@ -118,7 +112,8 @@ export const TRANSLATIONS = {
     precipWarning: "临近降水提醒",
     precipWarningDesc: "未来2小时内可能有降水，请注意防范。",
     morningReportTitle: "今日天气播报",
-    eveningReportTitle: "明日天气预告"
+    eveningReportTitle: "明日天气预告",
+    permissionDenied: "通知权限已被拒绝，请在浏览器设置中开启。"
   }
 };
 
@@ -129,7 +124,6 @@ export const DEFAULT_SETTINGS: AppSettings = {
   unit: 'metric',
   language: Language.ZH, 
   theme: AppTheme.SYSTEM,
-  locationService: LocationService.OSM,
   enableNotifications: false,
   morningReportTime: "08:00",
   eveningReportTime: "20:00"

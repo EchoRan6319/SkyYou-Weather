@@ -1,8 +1,8 @@
 
 import React, { useEffect } from 'react';
-import { AppSettings, Language, AppTheme, LocationService } from '../types';
+import { AppSettings, Language, AppTheme } from '../types';
 import { TRANSLATIONS } from '../constants';
-import { Moon, Languages, Ruler, Map, Bell, Clock } from 'lucide-react';
+import { Languages, Ruler, Bell } from 'lucide-react';
 import { requestNotificationPermission } from '../services/notificationService';
 
 interface Props {
@@ -13,12 +13,22 @@ interface Props {
 const SettingsPage: React.FC<Props> = ({ settings, updateSettings }) => {
   const t = TRANSLATIONS[settings.language];
 
-  // Request permission when toggled on
-  useEffect(() => {
-    if (settings.enableNotifications) {
-        requestNotificationPermission();
-    }
-  }, [settings.enableNotifications]);
+  // Logic to handle notification toggle with permission request
+  const handleNotificationToggle = async (enabled: boolean) => {
+      if (enabled) {
+          // Request permission immediately on user interaction
+          const granted = await requestNotificationPermission();
+          if (granted) {
+              updateSettings({ enableNotifications: true });
+          } else {
+              // Permission failed or denied
+              alert(t.permissionDenied);
+              updateSettings({ enableNotifications: false });
+          }
+      } else {
+          updateSettings({ enableNotifications: false });
+      }
+  };
 
   const SettingSection = ({ title, icon: Icon, children }: any) => (
     <div className="bg-white rounded-3xl p-6 mb-4 shadow-sm border border-gray-50">
@@ -79,7 +89,7 @@ const SettingsPage: React.FC<Props> = ({ settings, updateSettings }) => {
          <ToggleOption 
             label={t.enableNotifications} 
             checked={settings.enableNotifications} 
-            onChange={(val: boolean) => updateSettings({ enableNotifications: val })} 
+            onChange={handleNotificationToggle} 
          />
          
          {settings.enableNotifications && (
@@ -108,19 +118,6 @@ const SettingsPage: React.FC<Props> = ({ settings, updateSettings }) => {
             label="中文 (简体)" 
             checked={settings.language === Language.ZH} 
             onClick={() => updateSettings({ language: Language.ZH })} 
-        />
-      </SettingSection>
-
-      <SettingSection title={t.locationService} icon={Map}>
-        <RadioOption 
-            label={t.serviceTencent} 
-            checked={settings.locationService === LocationService.TENCENT} 
-            onClick={() => updateSettings({ locationService: LocationService.TENCENT })} 
-        />
-        <RadioOption 
-            label={t.serviceOsm} 
-            checked={settings.locationService === LocationService.OSM} 
-            onClick={() => updateSettings({ locationService: LocationService.OSM })} 
         />
       </SettingSection>
 

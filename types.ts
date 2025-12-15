@@ -75,16 +75,10 @@ export enum Language {
   ZH = 'zh'
 }
 
-export enum LocationService {
-  TENCENT = 'tencent',
-  OSM = 'osm'
-}
-
 export interface AppSettings {
   unit: 'metric' | 'imperial';
   language: Language;
   theme: AppTheme;
-  locationService: LocationService;
   // Notification Settings
   enableNotifications: boolean;
   morningReportTime: string; // Format "08:00"
