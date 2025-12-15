@@ -1,0 +1,7 @@
+{
+  "name": "SkyYou Weather",
+  "description": "A Material You inspired weather application featuring dynamic theming, responsive design, and integration with Caiyun and OpenWeather APIs.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
