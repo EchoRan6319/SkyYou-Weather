@@ -28,22 +28,15 @@ export const sendNotification = (title: string, options?: NotificationOptions) =
 
     if (Notification.permission === "granted") {
         try {
-            // Using a simple icon for the notification
+            // Using the root icon.png
             const opts = {
-                icon: 'https://cdn-icons-png.flaticon.com/512/4052/4052984.png',
+                icon: '/icon.png',
                 tag: 'skyyou-weather', // Tag prevents stacking multiple notifications
                 ...options
             };
             
-            // Try ServiceWorker first (better for mobile PWA)
-            if (navigator.serviceWorker && navigator.serviceWorker.ready) {
-                navigator.serviceWorker.ready.then(registration => {
-                    registration.showNotification(title, opts);
-                });
-            } else {
-                // Fallback to standard web notification
-                new Notification(title, opts);
-            }
+            // Standard web notification
+            new Notification(title, opts);
         } catch (e) {
             console.error("Notification failed", e);
         }
