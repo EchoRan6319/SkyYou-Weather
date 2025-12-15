@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { WeatherLocation, Language } from '../types';
 import { TRANSLATIONS } from '../constants';
 import { Plus, Navigation, Trash2, Search, X, Loader2 } from 'lucide-react';
-import { searchCity } from '../services/weatherService';
+import { searchCity, formatCityDistrict } from '../services/weatherService';
 
 interface Props {
   locations: WeatherLocation[];
@@ -25,17 +25,20 @@ const LocationsPage: React.FC<Props> = ({ locations, currentLocationId, onSelect
 
   // Debounce search
   useEffect(() => {
+    const controller = new AbortController();
     const timer = setTimeout(async () => {
       if (query.length > 1) {
         setIsSearchingApi(true);
-        const results = await searchCity(query, lang);
-        setSearchResults(results);
+        try {
+          const results = await searchCity(query, lang, controller.signal);
+          setSearchResults(results);
+        } catch (_) { /* aborted or failed */ }
         setIsSearchingApi(false);
       } else {
         setSearchResults([]);
       }
     }, 500);
-    return () => clearTimeout(timer);
+    return () => { controller.abort(); clearTimeout(timer); };
   }, [query, lang]);
 
   const handleSelectResult = (loc: WeatherLocation) => {
@@ -56,14 +59,14 @@ const LocationsPage: React.FC<Props> = ({ locations, currentLocationId, onSelect
                 autoFocus
                 type="text"
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
                 placeholder={t.searchPlaceholder}
                 className="flex-1 bg-transparent outline-none text-gray-800 placeholder-gray-400"
               />
               {isSearchingApi ? (
                 <Loader2 size={18} className="animate-spin text-gray-400" />
               ) : (
-                <button onClick={() => { setIsSearching(false); setQuery(''); }} className="p-2">
+                <button type="button" aria-label="关闭搜索" title="关闭搜索" onClick={() => { setIsSearching(false); setQuery(''); }} className="p-2">
                    <X size={20} className="text-gray-500" />
                 </button>
               )}
@@ -72,6 +75,9 @@ const LocationsPage: React.FC<Props> = ({ locations, currentLocationId, onSelect
           <>
             <h1 className="text-3xl font-medium text-gray-900">{t.manageLocations}</h1>
             <button 
+              type="button"
+              aria-label="添加城市"
+              title="添加城市"
               onClick={() => setIsSearching(true)}
               className="w-12 h-12 rounded-2xl bg-[#d3e3fd] text-[#041e49] flex items-center justify-center hover:shadow-md transition-all active:scale-95"
             >
@@ -90,21 +96,20 @@ const LocationsPage: React.FC<Props> = ({ locations, currentLocationId, onSelect
              {searchResults.length === 0 && query.length > 1 && !isSearchingApi && (
                 <div className="text-center text-gray-400 py-8">{t.unknown}</div>
              )}
-             {searchResults.map((loc) => (
+             {searchResults.map((loc: WeatherLocation) => (
                <div 
                  key={loc.id}
                  onClick={() => handleSelectResult(loc)}
                  className="flex flex-col p-4 bg-white rounded-2xl border border-gray-100 active:bg-gray-50 transition-colors cursor-pointer"
                >
-                  <span className="font-bold text-lg text-gray-800">{loc.name}</span>
-                  <span className="text-sm text-gray-500">{loc.district}</span>
+                  <span className="font-bold text-lg text-gray-800">{formatCityDistrict(loc.name, loc.district)}</span>
                </div>
              ))}
           </div>
         )}
 
         {/* Saved Locations List */}
-        {!isSearching && locations.map((loc) => {
+        {!isSearching && locations.map((loc: WeatherLocation) => {
             const isSelected = loc.id === currentLocationId;
             return (
                 <div 
@@ -120,16 +125,16 @@ const LocationsPage: React.FC<Props> = ({ locations, currentLocationId, onSelect
                             <Navigation size={20} className={isSelected ? 'text-blue-200' : 'text-blue-500'} />
                         )}
                         <div className="overflow-hidden">
-                            <h3 className="text-xl font-bold truncate pr-4">{loc.name}</h3>
-                            <p className={`text-sm truncate pr-4 ${isSelected ? 'text-gray-300' : 'text-gray-500'}`}>
-                                {loc.district || (loc.isCurrentLocation ? t.currentLocation : '')}
-                            </p>
+                            <h3 className="text-xl font-bold truncate pr-4">{formatCityDistrict(loc.name, loc.district)}</h3>
                         </div>
                     </div>
                     
                     {!loc.isCurrentLocation && (
                         <button 
-                            onClick={(e) => {
+                            type="button"
+                            aria-label="删除城市"
+                            title="删除城市"
+                            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                                 e.stopPropagation();
                                 onDelete(loc.id);
                             }}

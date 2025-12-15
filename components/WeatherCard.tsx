@@ -3,6 +3,7 @@ import React from 'react';
 import { CurrentWeather, WeatherLocation } from '../types';
 import { WeatherIcon } from './Icon';
 import { ArrowDown, ArrowUp, Thermometer, MapPin } from 'lucide-react';
+import { formatCityDistrict } from '../services/weatherService';
 
 interface Props {
   data: CurrentWeather;
@@ -32,7 +33,7 @@ const WeatherCard: React.FC<Props> = ({ data, location, onClick, feelsLikeLabel,
         <div className="inline-flex items-center gap-1.5 bg-white/40 backdrop-blur-md pl-3 pr-4 py-1.5 landscape:py-1 lg:landscape:py-2 xl:py-2 xl:px-6 rounded-full shadow-sm border border-white/20">
             <MapPin size={16} className="text-[#041e49] xl:w-5 xl:h-5" />
             <span className="font-bold text-sm xl:text-base tracking-wide line-clamp-1 max-w-[200px] text-[#041e49]">
-                {location.name}{location.district ? ` ${location.district}` : ''}
+                {formatCityDistrict(location.name, location.district)}
             </span>
         </div>
       </div>

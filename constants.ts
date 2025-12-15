@@ -8,6 +8,7 @@ import { WeatherLocation, AppSettings, Language, AppTheme } from './types';
 // ============================================================================
 export const CAIYUN_API_KEY = "19o10LzcwHoF3FJY"; // Enter your Caiyun Token
 export const OPENWEATHER_API_KEY = "9393c55a6a2bccb1c47d368d0c42bfba"; // Enter your OpenWeather Key
+export const AMAP_API_KEY = "f929c3e5dae0c33a668dee7f042451bb"; // 高德地图 Web服务Key，可选。留空则使用 OSM
 
 // ============================================================================
 // LOCALIZATION
