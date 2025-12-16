@@ -5,6 +5,7 @@ import {
   WeatherLocation, 
   AppSettings, 
   Language, 
+  AppTheme,
   WeatherAlert
 } from './types';
 import { 
@@ -34,7 +35,6 @@ const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState('home');
   const [isLaunched, setIsLaunched] = useState(false); // Controls the SplashScreen
   const [launchStatus, setLaunchStatus] = useState("Loading...");
-  const [isGlobalLoading, setIsGlobalLoading] = useState(false); // New state for loading overlay on add
 
   // Initialize settings
   const [settings, setSettings] = useState<AppSettings>(() => {
@@ -137,7 +137,6 @@ const App: React.FC = () => {
         if (isFirstVisit.current || (currentLocationId === 'current_gps' && locations.find(l => l.id === 'current_gps')?.name === t.loading)) {
             try {
                 setLaunchStatus("Locating...");
-                // Fetch coordinates using improved dual-strategy (GPS + IP fallback)
                 const coords = await getCoordinates();
                 currentCoords = coords;
                 
@@ -198,7 +197,7 @@ const App: React.FC = () => {
 
   // --- Standard Data Loading (Post-Launch updates) ---
   useEffect(() => {
-    if (isLaunched && !isGlobalLoading) {
+    if (isLaunched) {
         loadWeatherData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -278,39 +277,13 @@ const App: React.FC = () => {
     setLoading(false);
   };
 
-  const handleAddLocation = async (newLoc: WeatherLocation) => {
+  const handleAddLocation = (newLoc: WeatherLocation) => {
      if (locations.some(l => l.id === newLoc.id)) return;
      if (locations.some(l => l.name === newLoc.name && l.district === newLoc.district && !l.isCurrentLocation)) return;
      
-     // Start Global Loading Animation
-     setLaunchStatus(`Fetching data for ${newLoc.name}...`);
-     setIsGlobalLoading(true);
-
-     try {
-         // Add location first to state but don't switch yet
-         const updatedLocations = [...locations, newLoc];
-         
-         // Fetch data *before* switching tabs
-         const data = await fetchWeatherData(newLoc.coords, settings.language);
-         
-         // Minimum visual delay for smoothness
-         await new Promise(r => setTimeout(r, 1000));
-
-         setLocations(updatedLocations);
-         setCurrentLocationId(newLoc.id);
-         setWeather(data);
-         saveWeatherToCache(newLoc.id, data);
-         
-         setActiveTab('home');
-     } catch (e) {
-         console.error("Failed to add location weather", e);
-         // Fallback if fetch fails: still add location but user will see "No Data" or retry
-         setLocations([...locations, newLoc]);
-         setCurrentLocationId(newLoc.id);
-         setActiveTab('home');
-     } finally {
-         setIsGlobalLoading(false);
-     }
+     setLocations([...locations, newLoc]);
+     setCurrentLocationId(newLoc.id);
+     setActiveTab('home');
   };
 
   const handleDeleteLocation = (id: string) => {
@@ -339,7 +312,7 @@ const App: React.FC = () => {
 
   const renderHome = () => {
     // During normal usage (post-launch), if we are loading AND have no weather, show small spinner
-    if (loading && !weather && isLaunched && !isGlobalLoading) {
+    if (loading && !weather && isLaunched) {
         return (
             <div className="flex items-center justify-center min-h-[100dvh] bg-[#fdfcff]">
                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
@@ -411,13 +384,13 @@ const App: React.FC = () => {
 
   return (
     <div className="font-sans text-gray-900 bg-[#f8f9fa] min-h-[100dvh]">
-      {(!isLaunched || isGlobalLoading) && <LoadingScreen status={launchStatus} />}
+      {!isLaunched && <LoadingScreen status={launchStatus} />}
       
       {/* 
         We render the app structure even behind the splash screen if data is available 
         to ensure smooth fade-in, but visibility controls the user experience.
       */}
-      {isLaunched && !isGlobalLoading && (
+      {isLaunched && (
           <main className="animate-fade-in">
             {activeTab === 'home' && renderHome()}
             <div className="max-w-4xl mx-auto">
@@ -438,7 +411,7 @@ const App: React.FC = () => {
           </main>
       )}
 
-      {isLaunched && !isGlobalLoading && (
+      {isLaunched && (
         <BottomNav 
             activeTab={activeTab} 
             onTabChange={setActiveTab} 

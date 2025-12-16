@@ -3,12 +3,11 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#fdfcff" />
-    <meta name="color-scheme" content="light dark" />
     <title>SkyYou Weather</title>
-    <link rel="icon" type="image/png" href="/icon192.png" />
-    <link rel="apple-touch-icon" href="/icon512.png">
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/4052/4052984.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
@@ -19,17 +18,13 @@
         -webkit-tap-highlight-color: transparent;
       }
       /* Hide scrollbar for Chrome, Safari and Opera */
-      .no-scrollbar::-webkit-scrollbar {
+      。no-scrollbar::-webkit-scrollbar {
           display: none;
       }
       /* Hide scrollbar for IE, Edge and Firefox */
-      .no-scrollbar {
+      。no-scrollbar {
           -ms-overflow-style: none;  /* IE and Edge */
-      }
-      @supports (scrollbar-width: none) {
-        .no-scrollbar {
-          scrollbar-width: none;
-        }
+          scrollbar-width: none;  /* Firefox */
       }
 
       /* Custom Animations for Loading Screen */
@@ -37,7 +32,7 @@
         0%, 100% { transform: translateY(0px); }
         50% { transform: translateY(-10px); }
       }
-      .animate-float {
+      。animate-float {
         animation: float 3s ease-in-out infinite;
       }
       
@@ -60,11 +55,9 @@
   <script type="importmap">
 {
   "imports": {
+    "lucide-react": "https://esm.sh/lucide-react@^0.561.0",
     "react/": "https://esm.sh/react@^19.2.3/",
     "react": "https://esm.sh/react@^19.2.3",
-    "lucide-react": "https://esm.sh/lucide-react@^0.561.0",
-    "vite": "https://esm.sh/vite@^7.2.7",
-    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
     "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
   }
 }

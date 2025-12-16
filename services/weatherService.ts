@@ -108,85 +108,28 @@ const getMockData = (lang: Language): WeatherData => {
   };
 };
 
-/**
- * Fetch coordinates using IP address (Fallback for China/No-GPS)
- * Uses ipwho.is which is free and has decent routing.
- */
-const getIpCoordinates = async (): Promise<Coordinates> => {
-  try {
-    const response = await fetch('https://ipwho.is/?lang=zh-CN');
-    if (!response.ok) throw new Error('IP Location failed');
-    const data = await response.json();
-    
-    if (!data.success) throw new Error('IP Location API returned failure');
-
-    console.log("Using IP Location:", data.city, data.region);
-    return {
-      lat: data.latitude,
-      lon: data.longitude
-    };
-  } catch (error) {
-    console.warn("IP Location failed:", error);
-    throw error;
-  }
-};
-
-/**
- * Get current coordinates with fallback strategy
- */
 export const getCoordinates = (): Promise<Coordinates> => {
-  return new Promise(async (resolve, reject) => {
-    // Strategy: Try HTML5 Geolocation with a short timeout (3s).
-    // If it fails or times out (common in China without VPN), fallback to IP Location.
-    
-    let resolved = false;
-
-    const handleSuccess = (position: GeolocationPosition) => {
-      if (resolved) return;
-      resolved = true;
-      resolve({
-        lat: position.coords.latitude,
-        lon: position.coords.longitude
-      });
-    };
-
-    const handleError = async (error: GeolocationPositionError | string) => {
-      if (resolved) return;
-      // Do not reject immediately, try IP fallback
-      console.warn("HTML5 Geolocation failed or timed out, trying IP fallback...", error);
-      try {
-        const ipCoords = await getIpCoordinates();
-        resolved = true;
-        resolve(ipCoords);
-      } catch (ipError) {
-        resolved = true;
-        reject(new Error("All location services failed"));
-      }
-    };
-
+  return new Promise((resolve, reject) => {
     if (!navigator.geolocation) {
-      handleError("Geolocation not supported");
+      reject(new Error("Geolocation not supported"));
       return;
     }
-
-    // Set a timeout for the browser geolocation
-    const timeoutId = setTimeout(() => {
-        handleError("Timeout");
-    }, 4000); // 4 seconds timeout
-
+    
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        clearTimeout(timeoutId);
-        handleSuccess(pos);
+      (position) => {
+        resolve({
+          lat: position.coords.latitude,
+          lon: position.coords.longitude
+        });
       },
-      (err) => {
-        clearTimeout(timeoutId);
-        handleError(err);
+      (error) => {
+        console.warn("Geolocation error:", error.message);
+        reject(error);
       },
       {
-        enableHighAccuracy: false, // Set false for faster response
-        timeout: 3500,
-        maximumAge: 60000 // Accept cache from last minute
+        enableHighAccuracy: true,
+        maximumAge: 0, 
+        timeout: 8000
       }
     );
   });
@@ -203,9 +146,6 @@ interface LocationName {
 export const reverseGeocode = async (coords: Coordinates, lang: Language): Promise<LocationName> => {
     try {
         const localeParam = lang === Language.ZH ? 'zh-CN' : 'en';
-        // Use a different OSM server if needed, or stick to standard.
-        // Standard OSM can be slow in China, but usually works. 
-        // Alternatives like Baidu/Amap require keys. We'll stick to OSM for "Free/No-Key".
         const response = await fetch(
           `https://nominatim.openstreetmap.org/reverse?format=json&lat=${coords.lat}&lon=${coords.lon}&accept-language=${localeParam}&zoom=14`
         );

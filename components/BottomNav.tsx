@@ -29,9 +29,6 @@ const BottomNav: React.FC<Props> = ({ activeTab, onTabChange, labels }) => {
           
           return (
             <button
-              type="button"
-              aria-label={item.label}
-              title={item.label}
               key={item.id}
               onClick={() => onTabChange(item.id)}
               className="flex flex-col items-center justify-center w-20 group min-h-[56px]"

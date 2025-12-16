@@ -63,10 +63,7 @@ const SettingsPage: React.FC<Props> = ({ settings, updateSettings }) => {
              <input 
                 type="time" 
                 value={value} 
-                aria-label={label}
-                title={label}
-                placeholder="--:--"
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
+                onChange={(e) => onChange(e.target.value)}
                 className="bg-white border border-gray-200 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none"
              />
           </div>
@@ -77,14 +74,7 @@ const SettingsPage: React.FC<Props> = ({ settings, updateSettings }) => {
       <div className="flex items-center justify-between p-4 rounded-2xl bg-gray-50/50">
           <span className="text-gray-700 font-medium">{label}</span>
           <label className="relative inline-flex items-center cursor-pointer">
-            <input 
-              type="checkbox" 
-              className="sr-only peer" 
-              aria-label={label}
-              title={label}
-              checked={checked} 
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e.target.checked)} 
-            />
+            <input type="checkbox" className="sr-only peer" checked={checked} onChange={(e) => onChange(e.target.checked)} />
             <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#041e49]"></div>
           </label>
       </div>
@@ -145,7 +135,7 @@ const SettingsPage: React.FC<Props> = ({ settings, updateSettings }) => {
       </SettingSection>
 
       <div className="mt-8 text-center">
-        <p className="text-sm text-gray-400">SkyYou Weather v1.2.0</p>
+        <p className="text-sm text-gray-400">SkyYou Weather v1.2.0 (PWA)</p>
         <p className="text-xs text-gray-300 mt-1">Design inspired by Material You</p>
       </div>
     </div>

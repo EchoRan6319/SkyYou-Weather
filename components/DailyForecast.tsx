@@ -42,7 +42,7 @@ const DailyForecast: React.FC<Props> = ({ data, title, todayLabel }) => {
                 
                 {/* Visual Bar - Hidden on very small screens to prioritize text, visible on sm+ */}
                 <div className="hidden sm:block w-20 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                   <div className="h-full bg-[#d3e3fd] group-hover:bg-[#a8c7fa] transition-colors rounded-full w-[60%] ml-[20%]"></div>
+                   <div className="h-full bg-[#d3e3fd] group-hover:bg-[#a8c7fa] transition-colors rounded-full" style={{ width: '60%', marginLeft: '20%' }}></div>
                 </div>
 
                 <span className="text-sm font-bold text-gray-900 w-8 text-right">{Math.round(day.maxTemp)}°</span>
