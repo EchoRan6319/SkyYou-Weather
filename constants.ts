@@ -62,7 +62,13 @@ export const TRANSLATIONS = {
     precipWarningDesc: "Rain or snow expected in the next 2 hours.",
     morningReportTitle: "Morning Forecast",
     eveningReportTitle: "Tomorrow's Forecast",
-    permissionDenied: "Notification permission denied. Please enable in browser settings."
+    permissionDenied: "Notification permission denied. Please enable in browser settings.",
+    // Data Management
+    dataManagement: "Storage",
+    clearData: "Clear All Data",
+    clearDataDesc: "Reset app to default state. This cannot be undone.",
+    clearDataConfirm: "Are you sure you want to clear all data? This will reset the app and remove all your saved locations and settings.",
+    cleared: "Data Cleared"
   },
   [Language.ZH]: {
     home: "首页",
@@ -113,7 +119,13 @@ export const TRANSLATIONS = {
     precipWarningDesc: "未来2小时内可能有降水，请注意防范。",
     morningReportTitle: "今日天气播报",
     eveningReportTitle: "明日天气预告",
-    permissionDenied: "通知权限已被拒绝，请在浏览器设置中开启。"
+    permissionDenied: "通知权限已被拒绝，请在浏览器设置中开启。",
+    // Data Management
+    dataManagement: "存储管理",
+    clearData: "清除所有数据",
+    clearDataDesc: "重置应用为初始状态。此操作无法撤销。",
+    clearDataConfirm: "确定要清除所有数据吗？这将重置应用并删除所有保存的城市和设置。",
+    cleared: "数据已清除"
   }
 };
 
@@ -122,7 +134,7 @@ export const TRANSLATIONS = {
 // ============================================================================
 export const DEFAULT_SETTINGS: AppSettings = {
   unit: 'metric',
-  language: Language.ZH, 
+  language: Language.ZH,
   theme: AppTheme.SYSTEM,
   enableNotifications: false,
   morningReportTime: "08:00",
