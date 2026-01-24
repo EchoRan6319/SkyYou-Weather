@@ -27,10 +27,47 @@ import SettingsPage from './pages/SettingsPage';
 import LoadingScreen from './components/LoadingScreen';
 import PermissionModal from './components/PermissionModal';
 
+interface ErrorBoundaryProps {
+  children: React.ReactNode;
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error: any;
+}
+
+class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: any) {
+    return { hasError: true, error };
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="p-4 text-red-600 bg-white h-screen overflow-auto">
+          <h1>Something went wrong.</h1>
+          <pre>{this.state.error?.toString()}</pre>
+          <pre>{this.state.error?.stack}</pre>
+          <button onClick={() => { localStorage.clear(); window.location.reload(); }} className="mt-4 p-2 bg-gray-200">
+            Clear Data & Reload
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 const SETTINGS_STORAGE_KEY = 'skyyou_settings';
 const LOCATIONS_STORAGE_KEY = 'skyyou_locations';
 const CURRENT_LOC_STORAGE_KEY = 'skyyou_current_loc_id';
 const WEATHER_CACHE_KEY = 'skyyou_weather_cache';
+const ONBOARDED_STORAGE_KEY = 'skyyou_has_onboarded';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState('home');
@@ -132,6 +169,16 @@ const App: React.FC = () => {
       const startTime = Date.now();
       setLaunchStatus("Initializing...");
 
+      // 0. Check Onboarding Status
+      const hasOnboarded = localStorage.getItem(ONBOARDED_STORAGE_KEY);
+
+      if (!hasOnboarded) {
+        // If NOT onboarded, stop everything, show Modal immediately.
+        setIsLaunched(true);
+        setShowPermissionModal(true);
+        return;
+      }
+
       // 1. Initialize Location (GPS or Cached)
       let currentCoords = locations.find(l => l.id === currentLocationId)?.coords;
 
@@ -139,15 +186,6 @@ const App: React.FC = () => {
       if (isFirstVisit.current || (currentLocationId === 'current_gps' && locations.find(l => l.id === 'current_gps')?.name === t.loading)) {
         try {
           setLaunchStatus("Locating...");
-          // Check if we need to show permission modal (iOS fix)
-          if (isFirstVisit.current && (Notification.permission === 'default' || !navigator.permissions)) {
-            setShowPermissionModal(true);
-            // We wait for user interaction in modal, but we can't block here forever 
-            // or the splash screen won't go away. 
-            // Actually, better to show the modal AFTER splash screen or ON TOP of it.
-            // For now, we proceed to try getting coordinates, but let's assume it might fail 
-            // or be pending user action if we were using the modal.
-          }
 
           const coords = await getCoordinates();
           currentCoords = coords;
@@ -395,71 +433,81 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="font-sans text-gray-900 bg-[#f8f9fa] min-h-[100dvh]">
-      {!isLaunched && <LoadingScreen status={launchStatus} />}
+    <ErrorBoundary>
+      <div className="font-sans text-gray-900 bg-[#f8f9fa] min-h-[100dvh]">
+        {!isLaunched && <LoadingScreen status={launchStatus} />}
 
-      <PermissionModal
-        isOpen={showPermissionModal}
-        onClose={() => setShowPermissionModal(false)}
-        onLocationGranted={(coords) => {
-          // Update location with new coords
-          setLocations(prev => prev.map(loc => {
-            if (loc.isCurrentLocation) return { ...loc, coords: coords };
-            return loc;
-          }));
-          reverseGeocode(coords, settings.language).then(info => {
+        <PermissionModal
+          isOpen={showPermissionModal}
+          onClose={() => {
+            setShowPermissionModal(false);
+            localStorage.setItem(ONBOARDED_STORAGE_KEY, 'true');
+            // Reload to start fresh or trigger init
+            // For smoother UX, we could just trigger load, but reload ensures clean state
+            if (!locations[0].coords || locations[0].name === t.loading) {
+              window.location.reload();
+            }
+          }}
+          onLocationGranted={(coords) => {
+            // Update location with new coords
             setLocations(prev => prev.map(loc => {
-              if (loc.isCurrentLocation) {
-                return { ...loc, name: info.city || t.currentLocation, district: info.district };
-              }
+              if (loc.isCurrentLocation) return { ...loc, coords: coords };
               return loc;
             }));
-          });
-          // Also trigger weather load if needed
-          fetchWeatherData(coords, settings.language).then(data => {
-            setWeather(data);
-            saveWeatherToCache(currentLocationId, data);
-          });
-        }}
-        onNotificationGranted={() => {
-          setSettings(prev => ({ ...prev, enableNotifications: true }));
-        }}
-        language={settings.language}
-      />
+            reverseGeocode(coords, settings.language).then(info => {
+              setLocations(prev => prev.map(loc => {
+                if (loc.isCurrentLocation) {
+                  return { ...loc, name: info.city || t.currentLocation, district: info.district };
+                }
+                return loc;
+              }));
+            });
+            // Also trigger weather load if needed
+            fetchWeatherData(coords, settings.language).then(data => {
+              setWeather(data);
+              saveWeatherToCache(currentLocationId, data);
+            });
+          }}
+          onNotificationGranted={() => {
+            setSettings(prev => ({ ...prev, enableNotifications: true }));
+          }}
+          language={settings.language}
+        />
 
-      {/* 
+        {/* 
         We render the app structure even behind the splash screen if data is available 
         to ensure smooth fade-in, but visibility controls the user experience.
       */}
-      {isLaunched && (
-        <main className="animate-fade-in">
-          {activeTab === 'home' && renderHome()}
-          <div className="max-w-4xl mx-auto">
-            {activeTab === 'locations' && (
-              <LocationsPage
-                locations={locations}
-                currentLocationId={currentLocationId}
-                onSelect={(id) => { setCurrentLocationId(id); setActiveTab('home'); }}
-                onDelete={handleDeleteLocation}
-                onAdd={handleAddLocation}
-                lang={settings.language}
-              />
-            )}
-            {activeTab === 'settings' && (
-              <SettingsPage settings={settings} updateSettings={(s) => setSettings({ ...settings, ...s })} />
-            )}
-          </div>
-        </main>
-      )}
+        {isLaunched && (
+          <main className="animate-fade-in">
+            {activeTab === 'home' && renderHome()}
+            <div className="max-w-4xl mx-auto">
+              {activeTab === 'locations' && (
+                <LocationsPage
+                  locations={locations}
+                  currentLocationId={currentLocationId}
+                  onSelect={(id) => { setCurrentLocationId(id); setActiveTab('home'); }}
+                  onDelete={handleDeleteLocation}
+                  onAdd={handleAddLocation}
+                  lang={settings.language}
+                />
+              )}
+              {activeTab === 'settings' && (
+                <SettingsPage settings={settings} updateSettings={(s) => setSettings({ ...settings, ...s })} />
+              )}
+            </div>
+          </main>
+        )}
 
-      {isLaunched && (
-        <BottomNav
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-          labels={{ home: t.home, locations: t.locations, settings: t.settings }}
-        />
-      )}
-    </div>
+        {isLaunched && (
+          <BottomNav
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+            labels={{ home: t.home, locations: t.locations, settings: t.settings }}
+          />
+        )}
+      </div>
+    </ErrorBoundary>
   );
 };
 

@@ -40,7 +40,7 @@ const PermissionModal: React.FC<PermissionModalProps> = ({
     useEffect(() => {
         if (isOpen) {
             // Check initial states
-            if (Notification.permission === 'granted') {
+            if ("Notification" in window && Notification.permission === 'granted') {
                 setNotifStatus('success');
             }
             navigator.permissions?.query({ name: 'geolocation' }).then(result => {
@@ -50,30 +50,53 @@ const PermissionModal: React.FC<PermissionModalProps> = ({
     }, [isOpen]);
 
     const handleLocationClick = async () => {
+        if (!window.isSecureContext) {
+            alert("Error: Location requires HTTPS. If testing locally, use localhost or enable HTTPS.");
+        }
         try {
             const coords = await getCoordinates();
             setLocStatus('success');
             onLocationGranted(coords);
-        } catch (e) {
+        } catch (e: any) {
             console.warn(e);
+            alert(`Location Error: ${e.message || e}`);
             setLocStatus('error');
         }
     };
 
     const handleNotificationClick = async () => {
+        if (!window.isSecureContext) {
+            alert("Error: Notifications require HTTPS.");
+        }
+        if (!("Notification" in window)) {
+            alert("Notifications not supported in this browser.");
+            setNotifStatus('error');
+            return;
+        }
+
+        // Diagnostic
+        if (Notification.permission === 'denied') {
+            alert("Permission is currently DENIED. Please reset permissions in iOS Settings -> Safari -> Settings for Website.");
+            // We allow retry in case they fixed it
+        }
+
         const granted = await requestNotificationPermission();
         if (granted) {
             setNotifStatus('success');
             onNotificationGranted();
         } else {
+            // If it wasn't denied before but is now, they likely clicked "Don't Allow" or it auto-failed
             setNotifStatus('error');
+            if (Notification.permission !== 'granted') {
+                alert(`Failed. Status: ${Notification.permission}`);
+            }
         }
     };
 
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
             <div className="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl transform transition-all">
                 <div className="text-center mb-6">
                     <h2 className="text-2xl font-bold text-gray-800 mb-2">{t.title}</h2>
@@ -86,8 +109,8 @@ const PermissionModal: React.FC<PermissionModalProps> = ({
                         onClick={handleLocationClick}
                         disabled={locStatus === 'success'}
                         className={`w-full py-4 px-4 rounded-xl flex items-center justify-between transition-all ${locStatus === 'success'
-                                ? 'bg-green-50 text-green-700 border border-green-100'
-                                : 'bg-blue-50 text-blue-600 border border-blue-100 active:scale-95'
+                            ? 'bg-green-50 text-green-700 border border-green-100'
+                            : 'bg-blue-50 text-blue-600 border border-blue-100 active:scale-95'
                             }`}
                     >
                         <div className="flex items-center gap-3">
@@ -104,8 +127,8 @@ const PermissionModal: React.FC<PermissionModalProps> = ({
                         onClick={handleNotificationClick}
                         disabled={notifStatus === 'success'}
                         className={`w-full py-4 px-4 rounded-xl flex items-center justify-between transition-all ${notifStatus === 'success'
-                                ? 'bg-green-50 text-green-700 border border-green-100'
-                                : 'bg-indigo-50 text-indigo-600 border border-indigo-100 active:scale-95'
+                            ? 'bg-green-50 text-green-700 border border-green-100'
+                            : 'bg-indigo-50 text-indigo-600 border border-indigo-100 active:scale-95'
                             }`}
                     >
                         <div className="flex items-center gap-3">
