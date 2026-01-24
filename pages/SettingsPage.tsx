@@ -82,7 +82,7 @@ const SettingsPage: React.FC<Props> = ({ settings, updateSettings }) => {
   );
 
   return (
-    <div className="flex flex-col min-h-screen px-6 pt-12 pb-24 animate-fade-in bg-[#fdfcff] landscape:pb-6 landscape:pl-[80px]">
+    <div className="flex flex-col min-h-screen px-6 pt-12 pb-[calc(100px+env(safe-area-inset-bottom))] animate-fade-in bg-[#fdfcff] landscape:pb-6 landscape:pl-[80px]">
       <h1 className="text-3xl font-medium text-gray-900 mb-8">{t.settings}</h1>
 
       {/* Notification Settings */}
@@ -157,7 +157,7 @@ const SettingsPage: React.FC<Props> = ({ settings, updateSettings }) => {
       </SettingSection>
 
       <div className="mt-8 text-center">
-        <p className="text-sm text-gray-400">SkyYou Weather v1.2.1 (PWA)</p>
+        <p className="text-sm text-gray-400">SkyYou Weather v1.2.2 (PWA)</p>
         <p className="text-xs text-gray-300 mt-1">Design inspired by Material You</p>
       </div>
     </div>

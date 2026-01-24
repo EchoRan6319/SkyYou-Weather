@@ -376,7 +376,7 @@ const App: React.FC = () => {
     const displayAlerts = getDisplayAlerts(weather);
 
     return (
-      <div className="min-h-[100dvh] bg-[#f8f9fa] pb-[110px] landscape:h-[100dvh] landscape:pb-0 landscape:pl-[80px] landscape:overflow-hidden">
+      <div className="min-h-[100dvh] bg-[#f8f9fa] pb-[calc(110px+env(safe-area-inset-bottom))] landscape:h-[100dvh] landscape:pb-0 landscape:pl-[80px] landscape:overflow-hidden">
         <div className="max-w-[1400px] mx-auto w-full px-4 sm:px-6 pt-6 lg:pt-8 animate-fade-in landscape:h-full landscape:flex landscape:flex-col">
 
           <div className="mb-4 flex-shrink-0 landscape:mb-6">
