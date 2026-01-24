@@ -63,6 +63,9 @@ export const TRANSLATIONS = {
     morningReportTitle: "Morning Forecast",
     eveningReportTitle: "Tomorrow's Forecast",
     permissionDenied: "Notification permission denied. Please enable in browser settings.",
+    // Unit Settings
+    unitMetric: "Metric (°C, km/h)",
+    unitImperial: "Imperial (°F, mph)",
     // Data Management
     dataManagement: "Storage",
     clearData: "Clear All Data",
@@ -120,6 +123,9 @@ export const TRANSLATIONS = {
     morningReportTitle: "今日天气播报",
     eveningReportTitle: "明日天气预告",
     permissionDenied: "通知权限已被拒绝，请在浏览器设置中开启。",
+    // Unit Settings
+    unitMetric: "公制 (°C, km/h)",
+    unitImperial: "英制 (°F, mph)",
     // Data Management
     dataManagement: "存储管理",
     clearData: "清除所有数据",
