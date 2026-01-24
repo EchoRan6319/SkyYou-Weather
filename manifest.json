@@ -1,6 +1,6 @@
 {
   "name": "SkyYou Weather",
-  "short_name": "SkyYou",
+  "short_name": "SkyYou Weather",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#fdfcff",
