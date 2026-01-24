@@ -1,8 +1,8 @@
+
 import React from 'react';
 import { 
   Sun, Moon, CloudSun, CloudMoon, Cloud, CloudRain, 
-  CloudSnow, Wind, CloudFog, CloudLightning, Droplets,
-  Thermometer, Gauge, Eye, Navigation
+  CloudSnow, Wind, CloudFog, CloudLightning
 } from 'lucide-react';
 import { WeatherIconType } from '../types';
 

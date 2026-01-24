@@ -4,13 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "npx vite",
-    "build": "npx vite build",
-    "preview": "npx vite preview"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "lucide-react": "^0.561.0",
     "react": "^19.2.3",
+    "lucide-react": "^0.561.0",
+    "vite": "^7.2.7",
+    "@vitejs/plugin-react": "^5.1.2",
     "react-dom": "^19.2.3"
   },
   "devDependencies": {
