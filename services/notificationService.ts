@@ -30,7 +30,7 @@ export const sendNotification = (title: string, options?: NotificationOptions) =
         try {
             // Using a simple icon for the notification
             const opts = {
-                icon: '/icon.png',
+                icon: 'https://cdn-icons-png.flaticon.com/512/4052/4052984.png',
                 tag: 'skyyou-weather', // Tag prevents stacking multiple notifications
                 ...options
             };
