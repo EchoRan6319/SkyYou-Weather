@@ -470,7 +470,7 @@ const App: React.FC = () => {
             </div>
 
             {/* Right Column */}
-            <div className="landscape:col-span-7 lg:landscape:col-span-8 flex flex-col gap-4 landscape:h-full landscape:overflow-y-auto landscape:no-scrollbar landscape:pr-2 landscape:pb-4 sm:landscape:pb-6">
+            <div className="landscape:col-span-7 lg:landscape:col-span-8 flex flex-col gap-4 landscape:h-full landscape:overflow-y-auto no-scrollbar landscape:pr-2 landscape:pb-4 sm:landscape:pb-6">
               {displayAlerts.length > 0 && (
                 <div className="flex-shrink-0">
                   <WeatherAlerts alerts={displayAlerts} />
@@ -543,7 +543,7 @@ const App: React.FC = () => {
         to ensure smooth fade-in, but visibility controls the user experience.
       */}
         {isLaunched && (
-          <main className="animate-fade-in flex-1 landscape:min-h-0 landscape:overflow-y-auto">
+          <main className="animate-fade-in flex-1 landscape:min-h-0 landscape:overflow-y-auto no-scrollbar">
             {activeTab === 'home' && renderHome()}
             {activeTab !== 'home' && (
               <div className="max-w-[1400px] mx-auto w-full px-4 sm:px-6 pt-6 lg:pt-8 min-h-[100dvh] landscape:min-h-0">

@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { HourlyForecast as HourlyType } from '../types';
 import { WeatherIcon } from './Icon';
 
@@ -10,6 +10,26 @@ interface Props {
 }
 
 const HourlyForecast: React.FC<Props> = ({ data, title, noDataLabel = "No Data" }) => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      // If user is scrolling vertically, convert to horizontal
+      if (e.deltaY !== 0) {
+        el.scrollLeft += e.deltaY;
+        // CRITICAL: Block the vertical scroll propagation to the entire page
+        e.preventDefault();
+      }
+    };
+
+    // Use native addEventListener with passive: false to allow preventDefault
+    el.addEventListener('wheel', handleWheel, { passive: false });
+    return () => el.removeEventListener('wheel', handleWheel);
+  }, []);
+
   return (
     <div className="w-full py-4">
       <h3 className="text-sm font-semibold px-6 mb-4 text-[#041e49] dark:text-blue-200 opacity-70 uppercase tracking-wider">{title}</h3>
@@ -19,7 +39,10 @@ const HourlyForecast: React.FC<Props> = ({ data, title, noDataLabel = "No Data" 
           {noDataLabel}
         </div>
       ) : (
-        <div className="flex overflow-x-auto no-scrollbar px-4 space-x-2 pb-2">
+        <div
+          ref={scrollRef}
+          className="flex overflow-x-auto no-scrollbar px-4 space-x-2 pb-2"
+        >
           {data.map((item, index) => (
             <div
               key={index}
