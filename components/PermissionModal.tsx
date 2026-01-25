@@ -28,7 +28,8 @@ const PermissionModal: React.FC<PermissionModalProps> = ({
         continue: "开始使用",
         locSuccess: "定位已开启",
         notifSuccess: "通知已开启",
-        skip: "暂不开启"
+        skip: "暂不开启",
+        pwaGuide: "查看 PWA 安装指南"
     };
 
     useEffect(() => {
@@ -133,6 +134,20 @@ const PermissionModal: React.FC<PermissionModalProps> = ({
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                         )}
                     </button>
+
+                    {/* PWA Installation Guide Link */}
+                    <a
+                        href="https://web.developers.google.cn/learn/pwa/installation?hl=zh-cn"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full py-4 px-4 rounded-xl flex items-center justify-between transition-all bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/30 active:scale-95"
+                    >
+                        <div className="flex items-center gap-3">
+                            <span className="text-2xl">📲</span>
+                            <span className="font-semibold">{t.pwaGuide}</span>
+                        </div>
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                    </a>
                 </div>
 
                 <div className="mt-8 flex gap-3">

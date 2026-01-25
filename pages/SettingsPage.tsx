@@ -137,6 +137,24 @@ const SettingsPage: React.FC<Props> = ({ settings, updateSettings }) => {
         </div>
       </SettingSection>
 
+      {/* PWA Installation Section */}
+      <SettingSection title={t.pwaTitle} icon={Ruler}>
+        <div className="p-4 bg-emerald-50 dark:bg-emerald-900/10 rounded-2xl mb-4 border border-emerald-100 dark:border-emerald-900/20">
+          <p className="text-emerald-800 dark:text-emerald-300 text-sm leading-relaxed font-medium">
+            {t.pwaDesc}
+          </p>
+        </div>
+        <a
+          href="https://web.developers.google.cn/learn/pwa/installation?hl=zh-cn"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full p-4 rounded-2xl bg-gray-50/50 dark:bg-gray-800/50 flex items-center justify-between hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-colors"
+        >
+          <span className="text-gray-700 dark:text-gray-300 font-medium">{t.pwaGuide}</span>
+          <svg className="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+        </a>
+      </SettingSection>
+
       {/* Data Management */}
       <SettingSection title={t.dataManagement} icon={Trash2}>
         <div className="p-4 bg-blue-50 dark:bg-blue-900/10 rounded-2xl mb-4 border border-blue-100 dark:border-blue-900/20">

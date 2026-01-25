@@ -71,7 +71,11 @@ export const TRANSLATIONS = {
     clearData: "清除所有数据",
     clearDataDesc: "重置应用为初始状态。此操作无法撤销。",
     clearDataConfirm: "确定要清除所有数据吗？这将重置应用并删除所有保存的城市和设置。",
-    cleared: "数据已清除"
+    cleared: "数据已清除",
+    // PWA
+    pwaTitle: "安装应用",
+    pwaGuide: "查看 PWA 安装指南",
+    pwaDesc: "为了获得更沉浸的体验以及开启通知功能，建议将本项目安装为应用。"
   }
 };
 
