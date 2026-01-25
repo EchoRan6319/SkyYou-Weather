@@ -111,14 +111,14 @@ const SettingsPage: React.FC<Props> = ({ settings, updateSettings }) => {
 
       <SettingSection title={t.language} icon={Languages}>
         <RadioOption
-          label="English"
-          checked={settings.language === Language.EN}
-          onClick={() => updateSettings({ language: Language.EN })}
-        />
-        <RadioOption
           label="中文 (简体)"
           checked={settings.language === Language.ZH}
           onClick={() => updateSettings({ language: Language.ZH })}
+        />
+        <RadioOption
+          label="English"
+          checked={settings.language === Language.EN}
+          onClick={() => updateSettings({ language: Language.EN })}
         />
       </SettingSection>
 

@@ -86,7 +86,7 @@ export const TRANSLATIONS = {
     daily: "未来7天预报",
     addLocation: "添加城市",
     currentLocation: "当前位置",
-    manageLocations: "管理城市",
+    manageLocations: "城市管理",
     unit: "单位",
     language: "语言",
     theme: "主题",

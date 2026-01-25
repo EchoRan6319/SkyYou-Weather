@@ -25,7 +25,7 @@ const PermissionModal: React.FC<PermissionModalProps> = ({
     const isZh = language === Language.ZH;
 
     const t = {
-        title: isZh ? "欢迎使用 SkyYou" : "Welcome to SkyYou",
+        title: isZh ? "欢迎使用 SkyYou Weather" : "Welcome to SkyYou Weather",
         desc: isZh
             ? "为了提供当地天气和灾害预警，我们需要获取您的位置和通知权限。"
             : "To provide local weather and severe weather alerts, we need your permissions.",
