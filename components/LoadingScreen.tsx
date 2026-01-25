@@ -8,7 +8,7 @@ interface Props {
 
 const LoadingScreen: React.FC<Props> = ({ status = "SkyYou" }) => {
   return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#fdfcff] dark:bg-gray-950 transition-opacity duration-500">
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#fdfcff] dark:bg-[#030712] transition-opacity duration-500">
       <div className="relative w-32 h-32 flex items-center justify-center mb-8">
         {/* Background Glow */}
         <div className="absolute inset-0 bg-blue-100 dark:bg-blue-900/20 rounded-full blur-3xl opacity-60 animate-breathe"></div>

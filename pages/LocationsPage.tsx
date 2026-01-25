@@ -45,9 +45,9 @@ const LocationsPage: React.FC<Props> = ({ locations, currentLocationId, onSelect
   };
 
   return (
-    <div className="flex flex-col min-h-screen px-6 pt-12 pb-24 animate-fade-in landscape:pb-6">
+    <div className="flex flex-col min-h-full pb-24 animate-fade-in landscape:pb-6">
       {/* Header / Search Bar */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-start mb-6">
         {isSearching ? (
           <div className="flex-1 flex items-center bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 px-4 h-14">
             <Search size={20} className="text-gray-400 mr-3" />
@@ -73,10 +73,10 @@ const LocationsPage: React.FC<Props> = ({ locations, currentLocationId, onSelect
           </div>
         ) : (
           <>
-            <h1 className="text-3xl font-medium text-gray-900 dark:text-gray-100">{t.manageLocations}</h1>
+            <h1 className="text-3xl font-medium text-gray-900 dark:text-gray-100 leading-tight">{t.manageLocations}</h1>
             <button
               onClick={() => setIsSearching(true)}
-              className="w-12 h-12 rounded-2xl bg-[#d3e3fd] dark:bg-[#004a77] text-[#041e49] dark:text-blue-100 flex items-center justify-center hover:shadow-md transition-all active:scale-95"
+              className="w-12 h-12 rounded-2xl bg-[#d3e3fd] dark:bg-[#004a77] text-[#041e49] dark:text-blue-100 flex items-center justify-center hover:shadow-md transition-all active:scale-95 -mt-1"
               title={t.addLocation}
             >
               <Plus size={24} />

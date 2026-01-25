@@ -336,10 +336,12 @@ const App: React.FC = () => {
 
       if (isDark) {
         root.classList.add('dark');
-        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#030712');
+        document.querySelector('meta[name="theme-color"][media="(prefers-color-scheme: dark)"]')?.setAttribute('content', '#030712');
+        document.querySelector('meta[name="theme-color"]:not([media])')?.setAttribute('content', '#030712');
       } else {
         root.classList.remove('dark');
-        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#f8f9fa');
+        document.querySelector('meta[name="theme-color"][media="(prefers-color-scheme: light)"]')?.setAttribute('content', '#fdfcff');
+        document.querySelector('meta[name="theme-color"]:not([media])')?.setAttribute('content', '#fdfcff');
       }
     };
 
@@ -401,11 +403,11 @@ const App: React.FC = () => {
     const displayAlerts = getDisplayAlerts(weather);
 
     return (
-      <div className="min-h-[100dvh] bg-[#f8f9fa] dark:bg-gray-950 pb-[calc(110px+env(safe-area-inset-bottom))] landscape:h-[100dvh] landscape:pb-0 landscape:overflow-hidden">
+      <div className="min-h-[100dvh] bg-[#fdfcff] dark:bg-[#030712] pb-[calc(110px+env(safe-area-inset-bottom))] landscape:h-[100dvh] landscape:pb-0 landscape:overflow-hidden">
         <div className="max-w-[1400px] mx-auto w-full px-4 sm:px-6 pt-6 lg:pt-8 animate-fade-in landscape:h-full landscape:flex landscape:flex-col">
 
           <div className="mb-4 flex-shrink-0 landscape:mb-6">
-            <h1 className="text-[22px] font-normal text-[#1f1f1f] dark:text-gray-200 tracking-tight font-sans">SkyYou Weather</h1>
+            <h1 className="text-3xl font-medium text-[#1f1f1f] dark:text-gray-200 tracking-tight font-sans leading-tight">SkyYou Weather</h1>
           </div>
 
           <div className="flex flex-col gap-4 landscape:grid landscape:grid-cols-12 landscape:gap-8 landscape:flex-1 landscape:min-h-0">
@@ -459,7 +461,7 @@ const App: React.FC = () => {
 
   return (
     <ErrorBoundary>
-      <div className="font-sans text-gray-900 bg-[#f8f9fa] dark:bg-gray-950 min-h-[100dvh] pt-[env(safe-area-inset-top,0px)] landscape:pl-[calc(80px+env(safe-area-inset-left,0px))] transition-colors duration-300">
+      <div className="font-sans text-gray-900 bg-[#fdfcff] dark:bg-[#030712] min-h-[100dvh] pt-[env(safe-area-inset-top,0px)] landscape:pl-[calc(80px+env(safe-area-inset-left,0px))] transition-colors duration-300">
         {!isLaunched && <LoadingScreen status={launchStatus} />}
 
         <PermissionModal
@@ -503,9 +505,9 @@ const App: React.FC = () => {
         to ensure smooth fade-in, but visibility controls the user experience.
       */}
         {isLaunched && (
-          <main className="animate-fade-in">
+          <main className="animate-fade-in flex-1">
             {activeTab === 'home' && renderHome()}
-            <div className="max-w-4xl mx-auto px-4">
+            <div className="max-w-[1400px] mx-auto w-full px-4 sm:px-6 pt-6 lg:pt-8 min-h-[100dvh]">
               {activeTab === 'locations' && (
                 <LocationsPage
                   locations={locations}

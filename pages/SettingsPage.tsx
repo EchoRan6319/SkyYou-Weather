@@ -82,8 +82,8 @@ const SettingsPage: React.FC<Props> = ({ settings, updateSettings }) => {
   );
 
   return (
-    <div className="flex flex-col min-h-screen px-6 pt-12 pb-[calc(100px+env(safe-area-inset-bottom))] animate-fade-in bg-[#fdfcff] dark:bg-transparent landscape:pb-6">
-      <h1 className="text-3xl font-medium text-gray-900 dark:text-gray-100 mb-8">{t.settings}</h1>
+    <div className="flex flex-col min-h-full pb-[calc(100px+env(safe-area-inset-bottom))] animate-fade-in bg-[#fdfcff] dark:bg-transparent landscape:pb-6">
+      <h1 className="text-3xl font-medium text-gray-900 dark:text-gray-100 mb-8 leading-tight">{t.settings}</h1>
 
       {/* Notification Settings */}
       <SettingSection title={t.notifications} icon={Bell}>
@@ -164,7 +164,7 @@ const SettingsPage: React.FC<Props> = ({ settings, updateSettings }) => {
       </SettingSection>
 
       <div className="mt-8 text-center">
-        <p className="text-sm text-gray-400 dark:text-gray-500">SkyYou Weather V2.1.0 RC (PWA)</p>
+        <p className="text-sm text-gray-400 dark:text-gray-500">SkyYou Weather V2.2.1 RC (PWA)</p>
         <p className="text-xs text-gray-300 dark:text-gray-600 mt-1">Design inspired by Material You</p>
       </div>
     </div>
