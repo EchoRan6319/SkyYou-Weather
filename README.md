@@ -27,7 +27,7 @@
 
 ---
 
-## � 界面预览 (Screenshots)
+##  界面预览 (Screenshots)
 
 ### 📱 移动端 (iOS)
 <p align="center">
@@ -49,7 +49,7 @@
 
 ---
 
-## �🛠️ 技术栈 (Tech Stack)
+## 🛠️ 技术栈 (Tech Stack)
 
 *   **框架**: React 19 + TypeScript 5
 *   **构建**: Vite 6
