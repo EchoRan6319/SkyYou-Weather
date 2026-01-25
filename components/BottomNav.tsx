@@ -17,7 +17,7 @@ const BottomNav: React.FC<Props> = ({ activeTab, onTabChange, labels }) => {
 
   return (
     // Landscape: Move to left side, full height, fixed width
-    <div className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none landscape:top-0 landscape:right-auto landscape:w-[80px] landscape:h-screen landscape:border-r landscape:border-gray-100">
+    <div className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none landscape:top-0 landscape:right-auto landscape:w-[calc(80px+env(safe-area-inset-left,0px))] landscape:h-screen landscape:border-r landscape:border-gray-100">
       {/* 
          Fixed: Added 'pb-[calc(8px+env(safe-area-inset-bottom))]' to handle iOS Home Indicator correctly.
          'pb-safe' is not standard in Tailwind CDN.
@@ -26,7 +26,7 @@ const BottomNav: React.FC<Props> = ({ activeTab, onTabChange, labels }) => {
          Fixed: Added 'pb-[calc(8px+env(safe-area-inset-bottom))]' to handle iOS Home Indicator correctly.
          'pb-safe' is not standard in Tailwind CDN.
       */}
-      <div className="bg-[#fdfcff]/90 backdrop-blur-lg border-t border-gray-100 pb-[calc(8px+env(safe-area-inset-bottom))] pt-2 h-auto flex justify-around items-start max-w-2xl mx-auto rounded-t-3xl pointer-events-auto md:shadow-lg landscape:h-full landscape:w-full landscape:flex-col landscape:justify-center landscape:items-center landscape:gap-8 landscape:rounded-none landscape:border-t-0 landscape:pt-0 landscape:pb-0 landscape:max-w-none landscape:shadow-none">
+      <div className="bg-[#fdfcff]/90 backdrop-blur-lg border-t border-gray-100 pb-[calc(12px+env(safe-area-inset-bottom,0px))] pt-2 h-auto flex justify-around items-start max-w-2xl mx-auto rounded-t-3xl pointer-events-auto md:shadow-lg landscape:h-full landscape:w-full landscape:flex-col landscape:justify-center landscape:items-center landscape:gap-8 landscape:rounded-none landscape:border-t-0 landscape:pt-0 landscape:pb-0 landscape:max-w-none landscape:shadow-none landscape:pl-[env(safe-area-inset-left,0px)]">
         {navItems.map((item) => {
           const isActive = activeTab === item.id;
           const Icon = item.icon;
