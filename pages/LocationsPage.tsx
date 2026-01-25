@@ -11,11 +11,10 @@ interface Props {
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
   onAdd: (location: WeatherLocation) => void;
-  lang: Language;
 }
 
-const LocationsPage: React.FC<Props> = ({ locations, currentLocationId, onSelect, onDelete, onAdd, lang }) => {
-  const t = TRANSLATIONS[lang];
+const LocationsPage: React.FC<Props> = ({ locations, currentLocationId, onSelect, onDelete, onAdd }) => {
+  const t = TRANSLATIONS[Language.ZH];
 
   // Search State
   const [isSearching, setIsSearching] = useState(false);
@@ -28,7 +27,7 @@ const LocationsPage: React.FC<Props> = ({ locations, currentLocationId, onSelect
     const timer = setTimeout(async () => {
       if (query.length > 1) {
         setIsSearchingApi(true);
-        const results = await searchCity(query, lang);
+        const results = await searchCity(query, Language.ZH);
         setSearchResults(results);
         setIsSearchingApi(false);
       } else {
@@ -36,7 +35,7 @@ const LocationsPage: React.FC<Props> = ({ locations, currentLocationId, onSelect
       }
     }, 500);
     return () => clearTimeout(timer);
-  }, [query, lang]);
+  }, [query]);
 
   const handleSelectResult = (loc: WeatherLocation) => {
     onAdd(loc);

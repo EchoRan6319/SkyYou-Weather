@@ -9,32 +9,26 @@ interface PermissionModalProps {
     onClose: () => void;
     onLocationGranted: (coords: any) => void;
     onNotificationGranted: () => void;
-    language: Language;
 }
 
 const PermissionModal: React.FC<PermissionModalProps> = ({
     isOpen,
     onClose,
     onLocationGranted,
-    onNotificationGranted,
-    language
+    onNotificationGranted
 }) => {
     const [locStatus, setLocStatus] = useState<'pending' | 'success' | 'error'>('pending');
     const [notifStatus, setNotifStatus] = useState<'pending' | 'success' | 'error'>('pending');
 
-    const isZh = language === Language.ZH;
-
     const t = {
-        title: isZh ? "欢迎使用 SkyYou Weather" : "Welcome to SkyYou Weather",
-        desc: isZh
-            ? "为了提供当地天气和灾害预警，我们需要获取您的位置和通知权限。"
-            : "To provide local weather and severe weather alerts, we need your permissions.",
-        enableLoc: isZh ? "开启定位" : "Enable Location",
-        enableNotif: isZh ? "开启通知" : "Enable Notifications",
-        continue: isZh ? "开始使用" : "Get Started",
-        locSuccess: isZh ? "定位已开启" : "Location Enabled",
-        notifSuccess: isZh ? "通知已开启" : "Notifications Enabled",
-        skip: isZh ? "暂不开启" : "Skip"
+        title: "欢迎使用 SkyYou Weather",
+        desc: "为了提供当地天气和灾害预警，我们需要获取您的位置和通知权限。",
+        enableLoc: "开启定位",
+        enableNotif: "开启通知",
+        continue: "开始使用",
+        locSuccess: "定位已开启",
+        notifSuccess: "通知已开启",
+        skip: "暂不开启"
     };
 
     useEffect(() => {

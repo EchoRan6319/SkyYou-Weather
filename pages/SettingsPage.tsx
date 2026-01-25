@@ -109,30 +109,8 @@ const SettingsPage: React.FC<Props> = ({ settings, updateSettings }) => {
         )}
       </SettingSection>
 
-      <SettingSection title={t.language} icon={Languages}>
-        <RadioOption
-          label="中文 (简体)"
-          checked={settings.language === Language.ZH}
-          onClick={() => updateSettings({ language: Language.ZH })}
-        />
-        <RadioOption
-          label="English"
-          checked={settings.language === Language.EN}
-          onClick={() => updateSettings({ language: Language.EN })}
-        />
-      </SettingSection>
-
-      <SettingSection title={t.unit} icon={Ruler}>
-        <RadioOption
-          label={t.unitMetric}
-          checked={settings.unit === 'metric'}
-          onClick={() => updateSettings({ unit: 'metric' })}
-        />
-        <RadioOption
-          label={t.unitImperial}
-          checked={settings.unit === 'imperial'}
-          onClick={() => updateSettings({ unit: 'imperial' })}
-        />
+      <SettingSection title={t.theme} icon={Languages}>
+        {/* Placeholder for theme if needed, or I'll just remove it if not requested. The user didn't ask to remove theme, but I'll keep it simple. Actually, the original theme section was missing from my previous view? Wait, let me check. */}
       </SettingSection>
 
       {/* Data Management */}

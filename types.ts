@@ -59,9 +59,9 @@ export interface WeatherData {
   lastUpdated: number;
 }
 
-export type WeatherIconType = 
-  | 'clear-day' | 'clear-night' 
-  | 'partly-cloudy-day' | 'partly-cloudy-night' 
+export type WeatherIconType =
+  | 'clear-day' | 'clear-night'
+  | 'partly-cloudy-day' | 'partly-cloudy-night'
   | 'cloudy' | 'rain' | 'snow' | 'wind' | 'fog' | 'thunderstorm';
 
 export enum AppTheme {
@@ -71,12 +71,10 @@ export enum AppTheme {
 }
 
 export enum Language {
-  EN = 'en',
   ZH = 'zh'
 }
 
 export interface AppSettings {
-  unit: 'metric' | 'imperial';
   language: Language;
   theme: AppTheme;
   // Notification Settings

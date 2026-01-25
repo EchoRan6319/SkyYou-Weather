@@ -254,14 +254,7 @@ const App: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentLocationId, isLaunched]);
 
-  // Refresh names/data on language change
-  useEffect(() => {
-    if (isLaunched) {
-      loadWeatherData();
-      refreshAllLocationNames();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [settings.language]);
+
 
   // Notifications
   useEffect(() => {
@@ -295,7 +288,7 @@ const App: React.FC = () => {
   const refreshAllLocationNames = async () => {
     const updatedLocations = await Promise.all(locations.map(async (loc) => {
       try {
-        const info = await reverseGeocode(loc.coords, settings.language);
+        const info = await reverseGeocode(loc.coords, Language.ZH);
         const newName = info.city || loc.name;
         const newDist = info.district;
         return { ...loc, name: newName, district: newDist };
@@ -320,7 +313,7 @@ const App: React.FC = () => {
 
     if (loc) {
       try {
-        const data = await fetchWeatherData(loc.coords, settings.language);
+        const data = await fetchWeatherData(loc.coords, Language.ZH);
         setWeather(data);
         saveWeatherToCache(loc.id, data);
       } catch (error) { console.error("Failed to load weather", error); }
@@ -455,7 +448,7 @@ const App: React.FC = () => {
               if (loc.isCurrentLocation) return { ...loc, coords: coords };
               return loc;
             }));
-            reverseGeocode(coords, settings.language).then(info => {
+            reverseGeocode(coords, Language.ZH).then(info => {
               setLocations(prev => prev.map(loc => {
                 if (loc.isCurrentLocation) {
                   return { ...loc, name: info.city || t.currentLocation, district: info.district };
@@ -464,7 +457,7 @@ const App: React.FC = () => {
               }));
             });
             // Also trigger weather load if needed
-            fetchWeatherData(coords, settings.language).then(data => {
+            fetchWeatherData(coords, Language.ZH).then(data => {
               setWeather(data);
               saveWeatherToCache(currentLocationId, data);
             });
@@ -472,7 +465,6 @@ const App: React.FC = () => {
           onNotificationGranted={() => {
             setSettings(prev => ({ ...prev, enableNotifications: true }));
           }}
-          language={settings.language}
         />
 
         {/* 
@@ -490,7 +482,6 @@ const App: React.FC = () => {
                   onSelect={(id) => { setCurrentLocationId(id); setActiveTab('home'); }}
                   onDelete={handleDeleteLocation}
                   onAdd={handleAddLocation}
-                  lang={settings.language}
                 />
               )}
               {activeTab === 'settings' && (

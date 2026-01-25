@@ -13,66 +13,6 @@ export const OPENWEATHER_API_KEY = "9393c55a6a2bccb1c47d368d0c42bfba"; // Enter 
 // LOCALIZATION
 // ============================================================================
 export const TRANSLATIONS = {
-  [Language.EN]: {
-    home: "Home",
-    locations: "Locations",
-    settings: "Settings",
-    feelsLike: "Feels Like",
-    humidity: "Humidity",
-    wind: "Wind",
-    uvIndex: "UV Index",
-    aqi: "Air Quality",
-    hourly: "24-Hour Forecast",
-    daily: "7-Day Forecast",
-    addLocation: "Add Location",
-    currentLocation: "Current Location",
-    manageLocations: "Manage Cities",
-    unit: "Unit",
-    language: "Language",
-    theme: "Theme",
-    about: "About",
-    goodMorning: "Good Morning",
-    goodAfternoon: "Good Afternoon",
-    goodEvening: "Good Evening",
-    searchPlaceholder: "Search city...",
-    loading: "Loading...",
-    gpsError: "GPS Unavailable",
-    unknownLocation: "Unknown Location",
-    unknown: "Unknown",
-    today: "Today",
-    alerts: "Weather Alerts",
-    noAlerts: "No weather alerts",
-    // UV Levels
-    uvLow: "Low",
-    uvModerate: "Moderate",
-    uvHigh: "High",
-    uvVeryHigh: "Very High",
-    uvExtreme: "Extreme",
-    // Humidity Levels
-    humidityLow: "Dry",
-    humidityModerate: "Comfortable",
-    humidityHigh: "Humid",
-    noData: "No forecast data available",
-    // Notifications
-    notifications: "Notifications",
-    enableNotifications: "Enable Notifications",
-    morningReport: "Morning Report",
-    eveningReport: "Evening Report",
-    precipWarning: "Precipitation Warning",
-    precipWarningDesc: "Rain or snow expected in the next 2 hours.",
-    morningReportTitle: "Morning Forecast",
-    eveningReportTitle: "Tomorrow's Forecast",
-    permissionDenied: "Notification permission denied. Please enable in browser settings.",
-    // Unit Settings
-    unitMetric: "Metric (°C, km/h)",
-    unitImperial: "Imperial (°F, mph)",
-    // Data Management
-    dataManagement: "Storage",
-    clearData: "Clear All Data",
-    clearDataDesc: "Reset app to default state. This cannot be undone.",
-    clearDataConfirm: "Are you sure you want to clear all data? This will reset the app and remove all your saved locations and settings.",
-    cleared: "Data Cleared"
-  },
   [Language.ZH]: {
     home: "首页",
     locations: "城市管理",
@@ -139,7 +79,6 @@ export const TRANSLATIONS = {
 // DEFAULT STATE
 // ============================================================================
 export const DEFAULT_SETTINGS: AppSettings = {
-  unit: 'metric',
   language: Language.ZH,
   theme: AppTheme.SYSTEM,
   enableNotifications: false,
