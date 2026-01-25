@@ -3,12 +3,14 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#fdfcff" />
   <title>SkyYou Weather</title>
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/4052/4052984.png" type="image/png">
   <link rel="manifest" href="./manifest.json" />
   <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/4052/4052984.png">
   <meta name="apple-mobile-web-app-title" content="SkyYou Weather" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <script src="https://cdn.tailwindcss.com"></script>
@@ -24,12 +26,12 @@
     }
 
     /* Hide scrollbar for Chrome, Safari and Opera */
-    。no-scrollbar::-webkit-scrollbar {
+    .no-scrollbar::-webkit-scrollbar {
       display: none;
     }
 
     /* Hide scrollbar for IE, Edge and Firefox */
-    。no-scrollbar {
+    .no-scrollbar {
       -ms-overflow-style: none;
       /* IE and Edge */
       scrollbar-width: none;
@@ -49,7 +51,7 @@
       }
     }
 
-    。animate-float {
+    .animate-float {
       animation: float 3s ease-in-out infinite;
     }
 
@@ -87,21 +89,11 @@
       animation: slide-up-fade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
   </style>
-  <script type="importmap">
-{
-  "imports": {
-    "lucide-react": "https://esm.sh/lucide-react@^0.561.0",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
-  }
-}
-</script>
 </head>
 
 <body>
   <div id="root"></div>
-  <script type="module" src="/index.tsx"></script>
+  <script type="module" src="./index.tsx"></script>
 </body>
 
 </html>
