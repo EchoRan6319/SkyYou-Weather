@@ -5,7 +5,7 @@
 ---
 
 <p align="center">
-  <img src="./public/logo.png" width="120" />
+  <img src="./Screenshot/logo.png" width="120" />
 </p>
 
 ## ✨ 核心特性 (Core Features)
@@ -102,7 +102,13 @@ export const OPENWEATHER_API_KEY = "您的OpenWeatherKey";
 
 ## 📜 更新记录 (Changelog)
 
-### V3.1.1 RC (Current)
+### V3.2.0 RC (Current)
+*   **性能飞跃 (Performance)**：迁移至 **Tailwind CSS v4** 原生构建插件，移除 CDN 运行时，大幅缩短首屏渲染时间（LCP）。
+*   **架构重组 (Refactor)**：全面模块化 `App.tsx` 与天气服务引擎，引入 React 19 的组件化 Hook 模式。
+*   **极致优化 (Bundle)**：启用 Gzip/Brotli 双压缩与代码分包（Manual Chunking），显著减少初始载入体积。
+*   **视觉打磨**：通过 GPU 加速与渲染层优化，彻底解决高半径圆角的渲染锯齿（毛刺）问题。
+
+### V3.1.1 RC
 *   **交互补完**：实现 24 小时预报的鼠标滚轮映射与严格滚动隔离。
 *   **视觉修正**：全平台隐藏多余滚动条，优化桌面端布局。
 

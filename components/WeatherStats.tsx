@@ -27,7 +27,7 @@ const WeatherStats: React.FC<Props> = ({ data, uvCategory, humidityCategory, lab
         iconBgClass,
         textColor
     }: any) => (
-        <div className={`${bgClass} rounded-[2rem] p-5 flex flex-col justify-between aspect-[1/1] transition-transform active:scale-[0.98]`}>
+        <div className={`${bgClass} rounded-3xl p-5 flex flex-col justify-between aspect-[1/1] transition-transform active:scale-[0.98] transform-gpu outline outline-1 outline-transparent`}>
             <div className="flex justify-between items-start">
                 <div className={`${iconBgClass} p-3 rounded-full`}>
                     <Icon size={22} className={textColor} />

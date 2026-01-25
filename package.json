@@ -1,7 +1,7 @@
 {
   "name": "skyyou-weather",
   "private": true,
-  "version": "3.1.1-rc",
+  "version": "3.2.0-rc",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -14,10 +14,15 @@
     "react-dom": "^19.2.3"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.1.18",
     "@types/node": "^22.14.0",
     "@vitejs/plugin-basic-ssl": "^2.1.4",
     "@vitejs/plugin-react": "^5.0.0",
+    "autoprefixer": "^10.4.23",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.18",
     "typescript": "~5.8.2",
-    "vite": "^6.2.0"
+    "vite": "^6.2.0",
+    "vite-plugin-compression": "^0.5.1"
   }
 }

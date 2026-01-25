@@ -17,7 +17,7 @@ const DailyForecast: React.FC<Props> = ({ data, title, todayLabel }) => {
         {data.map((day, index) => (
           <div
             key={index}
-            className="flex items-center gap-3 hover:bg-[#f0f4fc] dark:hover:bg-gray-900 rounded-2xl p-3 transition-colors group"
+            className="flex items-center gap-3 hover:bg-[#f0f4fc] dark:hover:bg-gray-900 rounded-2xl p-3 transition-colors group transform-gpu"
           >
             {/* Day Name */}
             <div className="w-10 sm:w-14 landscape:sm:w-11 flex-shrink-0">

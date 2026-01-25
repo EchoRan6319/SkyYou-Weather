@@ -12,6 +12,12 @@ export const OPENWEATHER_API_KEY = "9393c55a6a2bccb1c47d368d0c42bfba"; // Enter 
 export const QWEATHER_API_KEY = "706af34151de4e90aee611ebdf4440f8"; // To be filled by user
 export const QWEATHER_API_HOST = "nr6hevnddn.re.qweatherapi.com"; // To be filled by user
 
+export const SETTINGS_STORAGE_KEY = 'skyyou_settings';
+export const LOCATIONS_STORAGE_KEY = 'skyyou_locations';
+export const CURRENT_LOC_STORAGE_KEY = 'skyyou_current_loc_id';
+export const WEATHER_CACHE_KEY = 'skyyou_weather_cache';
+export const ONBOARDED_STORAGE_KEY = 'skyyou_has_onboarded';
+
 // ============================================================================
 // LOCALIZATION
 // ============================================================================

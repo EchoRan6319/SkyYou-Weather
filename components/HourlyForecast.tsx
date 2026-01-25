@@ -41,12 +41,12 @@ const HourlyForecast: React.FC<Props> = ({ data, title, noDataLabel = "No Data" 
       ) : (
         <div
           ref={scrollRef}
-          className="flex overflow-x-auto no-scrollbar px-4 space-x-2 pb-2"
+          className="flex overflow-x-auto no-scrollbar px-4 space-x-2 pb-2 pt-2"
         >
           {data.map((item, index) => (
             <div
               key={index}
-              className="flex-shrink-0 flex flex-col items-center justify-between bg-[#f0f4fc] dark:bg-gray-900 border dark:border-gray-800 min-w-[4.5rem] h-32 rounded-[1.5rem] py-4"
+              className="flex-shrink-0 flex flex-col items-center justify-between bg-[#f0f4fc] dark:bg-gray-900 ring-1 ring-[#dee5f7]/60 dark:ring-gray-800/80 min-w-[4.8rem] h-32 rounded-3xl py-4 transform-gpu will-change-transform backface-hidden overflow-hidden shadow-sm bg-clip-padding"
             >
               <span className="text-xs font-medium text-gray-500 dark:text-gray-400">{item.time}</span>
               <WeatherIcon type={item.icon} size={28} className="text-[#041e49] dark:text-blue-200" />

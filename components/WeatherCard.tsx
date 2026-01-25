@@ -21,7 +21,7 @@ const WeatherCard: React.FC<Props> = ({ data, location, onClick, feelsLikeLabel,
       // Added 'isolate' to ensure proper stacking context for absolute blurs in Safari
       // Added 'transform-gpu' to force hardware acceleration
       // Adjusted padding for landscape mobile: landscape:p-4
-      className={`relative isolate transform-gpu overflow-hidden w-full bg-[#d3e3fd] dark:bg-blue-900/30 text-[#041e49] dark:text-blue-100 rounded-[2rem] p-6 landscape:p-4 lg:landscape:p-6 xl:p-10 min-h-[220px] shadow-sm transition-all duration-300 hover:shadow-md cursor-pointer flex flex-col items-center justify-between ${className}`}
+      className={`relative isolate transform-gpu overflow-hidden w-full bg-[#d3e3fd] dark:bg-blue-900/30 text-[#041e49] dark:text-blue-100 rounded-3xl p-6 landscape:p-4 lg:landscape:p-6 xl:p-10 min-h-[220px] shadow-sm transition-all duration-300 hover:shadow-md cursor-pointer flex flex-col items-center justify-between ${className}`}
     >
       {/* Background decoration */}
       <div className="absolute -top-12 -right-12 w-64 h-64 bg-white/30 rounded-full blur-3xl pointer-events-none mix-blend-overlay"></div>
