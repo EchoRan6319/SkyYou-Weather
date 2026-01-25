@@ -321,6 +321,37 @@ const App: React.FC = () => {
     setLoading(false);
   };
 
+  // Theme management logic
+  useEffect(() => {
+    const root = window.document.documentElement;
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+    const applyTheme = () => {
+      let isDark = false;
+      if (settings.theme === AppTheme.DARK) {
+        isDark = true;
+      } else if (settings.theme === AppTheme.SYSTEM) {
+        isDark = mediaQuery.matches;
+      }
+
+      if (isDark) {
+        root.classList.add('dark');
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#030712');
+      } else {
+        root.classList.remove('dark');
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#f8f9fa');
+      }
+    };
+
+    applyTheme();
+
+    if (settings.theme === AppTheme.SYSTEM) {
+      const handler = () => applyTheme();
+      mediaQuery.addEventListener('change', handler);
+      return () => mediaQuery.removeEventListener('change', handler);
+    }
+  }, [settings.theme]);
+
   const handleAddLocation = (newLoc: WeatherLocation) => {
     if (locations.some(l => l.id === newLoc.id)) return;
     if (locations.some(l => l.name === newLoc.name && l.district === newLoc.district && !l.isCurrentLocation)) return;
@@ -370,11 +401,11 @@ const App: React.FC = () => {
     const displayAlerts = getDisplayAlerts(weather);
 
     return (
-      <div className="min-h-[100dvh] bg-[#f8f9fa] pb-[calc(110px+env(safe-area-inset-bottom))] landscape:h-[100dvh] landscape:pb-0 landscape:overflow-hidden">
+      <div className="min-h-[100dvh] bg-[#f8f9fa] dark:bg-gray-950 pb-[calc(110px+env(safe-area-inset-bottom))] landscape:h-[100dvh] landscape:pb-0 landscape:overflow-hidden">
         <div className="max-w-[1400px] mx-auto w-full px-4 sm:px-6 pt-6 lg:pt-8 animate-fade-in landscape:h-full landscape:flex landscape:flex-col">
 
           <div className="mb-4 flex-shrink-0 landscape:mb-6">
-            <h1 className="text-[22px] font-normal text-[#1f1f1f] tracking-tight font-sans">SkyYou Weather</h1>
+            <h1 className="text-[22px] font-normal text-[#1f1f1f] dark:text-gray-200 tracking-tight font-sans">SkyYou Weather</h1>
           </div>
 
           <div className="flex flex-col gap-4 landscape:grid landscape:grid-cols-12 landscape:gap-8 landscape:flex-1 landscape:min-h-0">
@@ -405,7 +436,7 @@ const App: React.FC = () => {
                   <WeatherAlerts alerts={displayAlerts} />
                 </div>
               )}
-              <div className="bg-white rounded-[2rem] p-2 shadow-sm border border-gray-100/50 flex-shrink-0">
+              <div className="bg-white dark:bg-gray-900 rounded-[2rem] p-2 shadow-sm border border-gray-100/50 dark:border-gray-800/50 flex-shrink-0">
                 <HourlyForecast data={weather.hourly} title={t.hourly} noDataLabel={t.noData} />
               </div>
               <div className="flex-shrink-0">
@@ -416,7 +447,7 @@ const App: React.FC = () => {
                   labels={{ uv: t.uvIndex, wind: t.wind, humidity: t.humidity, aqi: t.aqi }}
                 />
               </div>
-              <div className="bg-white rounded-[2rem] p-2 shadow-sm border border-gray-100/50 flex-shrink-0">
+              <div className="bg-white dark:bg-gray-900 rounded-[2rem] p-2 shadow-sm border border-gray-100/50 dark:border-gray-800/50 flex-shrink-0">
                 <DailyForecast data={weather.daily} title={t.daily} todayLabel={t.today} />
               </div>
             </div>
@@ -428,7 +459,7 @@ const App: React.FC = () => {
 
   return (
     <ErrorBoundary>
-      <div className="font-sans text-gray-900 bg-[#f8f9fa] min-h-[100dvh] pt-[env(safe-area-inset-top,0px)] landscape:pl-[calc(80px+env(safe-area-inset-left,0px))]">
+      <div className="font-sans text-gray-900 bg-[#f8f9fa] dark:bg-gray-950 min-h-[100dvh] pt-[env(safe-area-inset-top,0px)] landscape:pl-[calc(80px+env(safe-area-inset-left,0px))] transition-colors duration-300">
         {!isLaunched && <LoadingScreen status={launchStatus} />}
 
         <PermissionModal

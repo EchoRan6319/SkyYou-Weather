@@ -1,11 +1,5 @@
 # SkyYou Weather
-
-**[中文]** | [English](#english)
-
 一个精美、移动端优先的渐进式 Web 应用 (PWA) 天气追踪器，采用 **Material You** 设计美学。
-
-A beautiful, mobile-first Progressive Web App (PWA) for weather tracking, designed with **Material You** aesthetics.
-
 ---
 
 ## ✨ 功能特性 (Features)
@@ -110,81 +104,6 @@ npm run dev
     export const CAIYUN_API_KEY = "你的彩云天气Token";
     export const OPENWEATHER_API_KEY = "你的OpenWeatherKey";
     ```
-
----
-
-<a name="english"></a>
-## 🇺🇸 English Description
-
-### Features
-
--   **Global Weather Data**: Accurate current, hourly (24h), and daily (7-day) forecasts.
--   **Mobile-First Design**:
-    -   Responsive layout optimized for mobile devices.
-    -   **Floating Dock** navigation for easy thumb access.
-    -   Safe-area awareness for modern notch/island phones (iOS/Android).
-    -   Smooth animations and transitions.
--   **Location Management**:
-    -   Automatic GPS positioning.
-    -   Search and save multiple cities.
-    -   Easy switching between locations.
--   **PWA Support**: Installable as a native-like app on iOS and Android.
--   **Localization**: Full support for English and Chinese (Simplified).
--   **Customization**:
-    -   Unit conversion (Metric/Imperial).
-    -   Theme support (System/Light/Dark).
-    -   Notification settings (Morning/Evening reports).
--   **Data Privacy**: "Clear Data" feature to reset local storage.
-
-### Tech Stack
-
--   **Frontend**: React (v19), TypeScript
--   **Build Tool**: Vite
--   **Styling**: Tailwind CSS
--   **Icons**: Lucide React
-
-### Getting Started
-
-#### Prerequisites
-
--   Node.js installed.
-
-#### Installation
-
-1.  Clone the repository:
-    ```bash
-    git clone https://github.com/YourUsername/SkyYou-Weather.git
-    cd SkyYou-Weather
-    ```
-
-2.  Install dependencies:
-    ```bash
-    npm install
-    ```
-
-3.  Start the development server:
-    ```bash
-    npm run dev
-    ```
-
-#### Mobile Device Testing
-
-**Important**: iOS and Android require **HTTPS** for Location usage. This project uses a self-signed certificate for development.
-1.  Run `npm run dev`.
-2.  Open `https://<Network-IP>:5173` on your phone.
-3.  Accept the security warning to proceed.
-
-#### Production Build
-
-1.  Build the app:
-    ```bash
-    npm run build
-    ```
-2.  Preview locally:
-    ```bash
-    npm run preview
-    ```
-3.  Deploy the `dist` folder to any static host (Vercel, Netlify, Nginx).
 
 ---
 

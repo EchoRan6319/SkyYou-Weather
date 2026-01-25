@@ -49,7 +49,7 @@ const LocationsPage: React.FC<Props> = ({ locations, currentLocationId, onSelect
       {/* Header / Search Bar */}
       <div className="flex justify-between items-center mb-6">
         {isSearching ? (
-          <div className="flex-1 flex items-center bg-white rounded-2xl shadow-sm border border-gray-100 px-4 h-14">
+          <div className="flex-1 flex items-center bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 px-4 h-14">
             <Search size={20} className="text-gray-400 mr-3" />
             <input
               autoFocus
@@ -57,22 +57,27 @@ const LocationsPage: React.FC<Props> = ({ locations, currentLocationId, onSelect
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={t.searchPlaceholder}
-              className="flex-1 bg-transparent outline-none text-gray-800 placeholder-gray-400"
+              className="flex-1 bg-transparent outline-none text-gray-800 dark:text-gray-100 placeholder-gray-400"
             />
             {isSearchingApi ? (
               <Loader2 size={18} className="animate-spin text-gray-400" />
             ) : (
-              <button onClick={() => { setIsSearching(false); setQuery(''); }} className="p-2">
-                <X size={20} className="text-gray-500" />
+              <button
+                onClick={() => { setIsSearching(false); setQuery(''); }}
+                className="p-2"
+                title={t.skip}
+              >
+                <X size={20} className="text-gray-500 dark:text-gray-400" />
               </button>
             )}
           </div>
         ) : (
           <>
-            <h1 className="text-3xl font-medium text-gray-900">{t.manageLocations}</h1>
+            <h1 className="text-3xl font-medium text-gray-900 dark:text-gray-100">{t.manageLocations}</h1>
             <button
               onClick={() => setIsSearching(true)}
-              className="w-12 h-12 rounded-2xl bg-[#d3e3fd] text-[#041e49] flex items-center justify-center hover:shadow-md transition-all active:scale-95"
+              className="w-12 h-12 rounded-2xl bg-[#d3e3fd] dark:bg-[#004a77] text-[#041e49] dark:text-blue-100 flex items-center justify-center hover:shadow-md transition-all active:scale-95"
+              title={t.addLocation}
             >
               <Plus size={24} />
             </button>
@@ -111,16 +116,18 @@ const LocationsPage: React.FC<Props> = ({ locations, currentLocationId, onSelect
               onClick={() => onSelect(loc.id)}
               className={`
                         relative flex items-center justify-between p-6 rounded-3xl transition-all duration-300 border
-                        ${isSelected ? 'bg-[#041e49] text-white border-transparent shadow-lg' : 'bg-white text-gray-800 border-gray-100'}
+                        ${isSelected
+                  ? 'bg-[#041e49] dark:bg-[#004a77] text-white border-transparent shadow-lg'
+                  : 'bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 border-gray-100 dark:border-gray-800'}
                     `}
             >
               <div className="flex items-center gap-4">
                 {loc.isCurrentLocation && (
-                  <Navigation size={20} className={isSelected ? 'text-blue-200' : 'text-blue-500'} />
+                  <Navigation size={20} className={isSelected ? 'text-blue-200' : 'text-blue-500 dark:text-blue-400'} />
                 )}
                 <div className="overflow-hidden">
-                  <h3 className="text-xl font-bold truncate pr-4">{loc.name}</h3>
-                  <p className={`text-sm truncate pr-4 ${isSelected ? 'text-gray-300' : 'text-gray-500'}`}>
+                  <h3 className={`text-xl font-bold truncate pr-4 ${isSelected ? 'text-white' : 'text-gray-800 dark:text-gray-100'}`}>{loc.name}</h3>
+                  <p className={`text-sm truncate pr-4 ${isSelected ? 'text-gray-300' : 'text-gray-500 dark:text-gray-400'}`}>
                     {loc.district || (loc.isCurrentLocation ? t.currentLocation : '')}
                   </p>
                 </div>
@@ -132,7 +139,7 @@ const LocationsPage: React.FC<Props> = ({ locations, currentLocationId, onSelect
                     e.stopPropagation();
                     onDelete(loc.id);
                   }}
-                  className={`p-2 rounded-full ${isSelected ? 'hover:bg-white/20 text-white' : 'hover:bg-gray-100 text-red-500'}`}
+                  className={`p-2 rounded-full ${isSelected ? 'hover:bg-white/20 text-white' : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-red-500'}`}
                   title={t.clearData}
                   aria-label={t.clearData}
                 >

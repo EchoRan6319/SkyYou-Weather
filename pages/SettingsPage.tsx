@@ -31,12 +31,12 @@ const SettingsPage: React.FC<Props> = ({ settings, updateSettings }) => {
   };
 
   const SettingSection = ({ title, icon: Icon, children }: any) => (
-    <div className="bg-white rounded-3xl p-6 mb-4 shadow-sm border border-gray-50">
+    <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 mb-4 shadow-sm border border-gray-50 dark:border-gray-800">
       <div className="flex items-center gap-3 mb-6">
-        <div className="p-2 bg-blue-50 text-blue-600 rounded-full">
+        <div className="p-2 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full">
           <Icon size={20} />
         </div>
-        <h3 className="text-lg font-bold text-gray-800">{title}</h3>
+        <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">{title}</h3>
       </div>
       <div className="space-y-4">
         {children}
@@ -47,46 +47,54 @@ const SettingsPage: React.FC<Props> = ({ settings, updateSettings }) => {
   const RadioOption = ({ label, checked, onClick }: any) => (
     <div
       onClick={onClick}
-      className={`flex items-center justify-between p-4 rounded-2xl cursor-pointer transition-colors ${checked ? 'bg-[#d3e3fd]/30' : 'hover:bg-gray-50'}`}
+      className={`flex items-center justify-between p-4 rounded-2xl cursor-pointer transition-colors ${checked ? 'bg-[#d3e3fd]/30 dark:bg-[#004a77]/30' : 'hover:bg-gray-50 dark:hover:bg-gray-800'}`}
     >
-      <span className={`font-medium ${checked ? 'text-[#041e49]' : 'text-gray-600'}`}>{label}</span>
-      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${checked ? 'border-[#041e49]' : 'border-gray-300'}`}>
-        {checked && <div className="w-3 h-3 rounded-full bg-[#041e49]" />}
+      <span className={`font-medium ${checked ? 'text-[#041e49] dark:text-blue-200' : 'text-gray-600 dark:text-gray-400'}`}>{label}</span>
+      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${checked ? 'border-[#041e49] dark:border-blue-400' : 'border-gray-300 dark:border-gray-700'}`}>
+        {checked && <div className="w-3 h-3 rounded-full bg-[#041e49] dark:bg-blue-400" />}
       </div>
     </div>
   );
 
   const TimeOption = ({ label, value, onChange }: any) => (
-    <div className="flex items-center justify-between p-4 rounded-2xl bg-gray-50/50">
-      <span className="text-gray-700 font-medium">{label}</span>
+    <div className="flex items-center justify-between p-4 rounded-2xl bg-gray-50/50 dark:bg-gray-800/50">
+      <span className="text-gray-700 dark:text-gray-300 font-medium">{label}</span>
       <div className="relative">
         <input
           type="time"
           aria-label={label}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="bg-white border border-gray-200 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none"
+          className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none"
         />
       </div>
     </div>
   );
 
   const ToggleOption = ({ label, checked, onChange }: any) => (
-    <div className="flex items-center justify-between p-4 rounded-2xl bg-gray-50/50">
-      <span className="text-gray-700 font-medium">{label}</span>
+    <div className="flex items-center justify-between p-4 rounded-2xl bg-gray-50/50 dark:bg-gray-800/50">
+      <span className="text-gray-700 dark:text-gray-300 font-medium">{label}</span>
       <label className="relative inline-flex items-center cursor-pointer">
         <input type="checkbox" className="sr-only peer" checked={checked} onChange={(e) => onChange(e.target.checked)} aria-label={label} />
-        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#041e49]"></div>
+        <div className="w-11 h-6 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#041e49] dark:peer-checked:bg-blue-600"></div>
       </label>
     </div>
   );
 
   return (
-    <div className="flex flex-col min-h-screen px-6 pt-12 pb-[calc(100px+env(safe-area-inset-bottom))] animate-fade-in bg-[#fdfcff] landscape:pb-6">
-      <h1 className="text-3xl font-medium text-gray-900 mb-8">{t.settings}</h1>
+    <div className="flex flex-col min-h-screen px-6 pt-12 pb-[calc(100px+env(safe-area-inset-bottom))] animate-fade-in bg-[#fdfcff] dark:bg-transparent landscape:pb-6">
+      <h1 className="text-3xl font-medium text-gray-900 dark:text-gray-100 mb-8">{t.settings}</h1>
 
       {/* Notification Settings */}
       <SettingSection title={t.notifications} icon={Bell}>
+        <div className="p-4 bg-orange-50 dark:bg-orange-900/10 rounded-2xl mb-4 border border-orange-100 dark:border-orange-900/20">
+          <p className="text-orange-800 dark:text-orange-300 text-sm leading-relaxed font-medium">
+            📱 如果是移动端设备，必须将本项目安装为PWA应用后，才能开启通知权限！
+          </p>
+          <p className="text-orange-800 dark:text-orange-300 text-sm leading-relaxed font-medium">
+            ❗ 受限于技术原因，该功能可能无效，请您谅解。
+          </p>
+        </div>
         <ToggleOption
           label={t.enableNotifications}
           checked={settings.enableNotifications}
@@ -110,15 +118,36 @@ const SettingsPage: React.FC<Props> = ({ settings, updateSettings }) => {
       </SettingSection>
 
       <SettingSection title={t.theme} icon={Languages}>
-        {/* Placeholder for theme if needed, or I'll just remove it if not requested. The user didn't ask to remove theme, but I'll keep it simple. Actually, the original theme section was missing from my previous view? Wait, let me check. */}
+        <div className="space-y-1">
+          <RadioOption
+            label="浅色模式"
+            checked={settings.theme === AppTheme.LIGHT}
+            onClick={() => updateSettings({ theme: AppTheme.LIGHT })}
+          />
+          <RadioOption
+            label="深色模式"
+            checked={settings.theme === AppTheme.DARK}
+            onClick={() => updateSettings({ theme: AppTheme.DARK })}
+          />
+          <RadioOption
+            label="跟随系统"
+            checked={settings.theme === AppTheme.SYSTEM}
+            onClick={() => updateSettings({ theme: AppTheme.SYSTEM })}
+          />
+        </div>
       </SettingSection>
 
       {/* Data Management */}
       <SettingSection title={t.dataManagement} icon={Trash2}>
-        <div className="p-4 bg-red-50 rounded-2xl flex items-center justify-between">
+        <div className="p-4 bg-blue-50 dark:bg-blue-900/10 rounded-2xl mb-4 border border-blue-100 dark:border-blue-900/20">
+          <p className="text-blue-800 dark:text-blue-300 text-sm leading-relaxed font-medium">
+            💡 如果无法正常获取位置信息，请在下方存储管理中选择清除所有数据！
+          </p>
+        </div>
+        <div className="p-4 bg-red-50 dark:bg-red-900/10 rounded-2xl flex items-center justify-between border border-transparent dark:border-red-900/20">
           <div className="flex-1 mr-4">
-            <h4 className="text-red-800 font-medium mb-1">{t.clearData}</h4>
-            <p className="text-red-600/70 text-xs">{t.clearDataDesc}</p>
+            <h4 className="text-red-800 dark:text-red-400 font-medium mb-1">{t.clearData}</h4>
+            <p className="text-red-600/70 dark:text-red-400/60 text-xs">{t.clearDataDesc}</p>
           </div>
           <button
             onClick={() => {
@@ -127,7 +156,7 @@ const SettingsPage: React.FC<Props> = ({ settings, updateSettings }) => {
                 window.location.reload();
               }
             }}
-            className="px-4 py-2 bg-white text-red-600 text-sm font-medium rounded-xl border border-red-100 shadow-sm hover:bg-red-50 active:scale-95 transition-all"
+            className="px-4 py-2 bg-white dark:bg-gray-800 text-red-600 dark:text-red-400 text-sm font-medium rounded-xl border border-red-100 dark:border-red-900/30 shadow-sm hover:bg-red-50 dark:hover:bg-red-900/10 active:scale-95 transition-all"
           >
             {t.clearData}
           </button>
@@ -135,8 +164,8 @@ const SettingsPage: React.FC<Props> = ({ settings, updateSettings }) => {
       </SettingSection>
 
       <div className="mt-8 text-center">
-        <p className="text-sm text-gray-400">SkyYou Weather V2.0.0 RC (PWA)</p>
-        <p className="text-xs text-gray-300 mt-1">Design inspired by Material You</p>
+        <p className="text-sm text-gray-400 dark:text-gray-500">SkyYou Weather V2.1.0 RC (PWA)</p>
+        <p className="text-xs text-gray-300 dark:text-gray-600 mt-1">Design inspired by Material You</p>
       </div>
     </div>
   );

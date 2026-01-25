@@ -91,10 +91,10 @@ const PermissionModal: React.FC<PermissionModalProps> = ({
 
     return (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-            <div className="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl transform transition-all">
+            <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 w-full max-w-sm shadow-2xl transform transition-all border dark:border-gray-800">
                 <div className="text-center mb-6">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-2">{t.title}</h2>
-                    <p className="text-gray-600 text-sm leading-relaxed">{t.desc}</p>
+                    <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">{t.title}</h2>
+                    <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">{t.desc}</p>
                 </div>
 
                 <div className="space-y-4">
@@ -103,8 +103,8 @@ const PermissionModal: React.FC<PermissionModalProps> = ({
                         onClick={handleLocationClick}
                         disabled={locStatus === 'success'}
                         className={`w-full py-4 px-4 rounded-xl flex items-center justify-between transition-all ${locStatus === 'success'
-                            ? 'bg-green-50 text-green-700 border border-green-100'
-                            : 'bg-blue-50 text-blue-600 border border-blue-100 active:scale-95'
+                            ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-100 dark:border-green-900/30'
+                            : 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/30 active:scale-95'
                             }`}
                     >
                         <div className="flex items-center gap-3">
@@ -121,8 +121,8 @@ const PermissionModal: React.FC<PermissionModalProps> = ({
                         onClick={handleNotificationClick}
                         disabled={notifStatus === 'success'}
                         className={`w-full py-4 px-4 rounded-xl flex items-center justify-between transition-all ${notifStatus === 'success'
-                            ? 'bg-green-50 text-green-700 border border-green-100'
-                            : 'bg-indigo-50 text-indigo-600 border border-indigo-100 active:scale-95'
+                            ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-100 dark:border-green-900/30'
+                            : 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/30 active:scale-95'
                             }`}
                     >
                         <div className="flex items-center gap-3">
@@ -138,13 +138,13 @@ const PermissionModal: React.FC<PermissionModalProps> = ({
                 <div className="mt-8 flex gap-3">
                     <button
                         onClick={onClose}
-                        className="flex-1 py-3 bg-gray-900 text-white rounded-xl font-medium shadow-lg hover:shadow-xl active:scale-95 transition-all"
+                        className="flex-1 py-3 bg-gray-900 dark:bg-blue-600 text-white dark:text-white rounded-xl font-medium shadow-lg hover:shadow-xl active:scale-95 transition-all"
                     >
                         {t.continue}
                     </button>
 
                 </div>
-                <button onClick={onClose} className="w-full mt-4 text-xs text-gray-400 font-medium hover:text-gray-600">{t.skip}</button>
+                <button onClick={onClose} className="w-full mt-4 text-xs text-gray-400 dark:text-gray-500 font-medium hover:text-gray-600 dark:hover:text-gray-300">{t.skip}</button>
             </div>
         </div>
     );
