@@ -11,5 +11,6 @@ export default defineConfig({
   server: {
     host: '0.0.0.0', // Listen on all local IPs
     https: true
-  }
+  },
+  base: '/SkyYou-Weather/'
 });
