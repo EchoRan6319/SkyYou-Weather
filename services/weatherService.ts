@@ -49,19 +49,19 @@ const getMockData = (lang: Language): WeatherData => {
   const locale = isZh ? 'zh-CN' : 'en-US';
 
   const mockAlerts: WeatherAlert[] = isZh ? [
-      {
-          title: "暴雨蓝色预警",
-          description: "预计未来24小时内，本市大部分地区将出现50毫米以上降水，请注意防范。",
-          level: "major",
-          source: "市气象台"
-      }
+    {
+      title: "暴雨蓝色预警",
+      description: "预计未来24小时内，本市大部分地区将出现50毫米以上降水，请注意防范。",
+      level: "major",
+      source: "市气象台"
+    }
   ] : [
-      {
-          title: "Heavy Rain Warning",
-          description: "Heavy rain is expected in the next 24 hours.",
-          level: "major",
-          source: "Met Office"
-      }
+    {
+      title: "Heavy Rain Warning",
+      description: "Heavy rain is expected in the next 24 hours.",
+      level: "major",
+      source: "Met Office"
+    }
   ];
 
   // 30% chance to show an alert in mock mode
@@ -94,7 +94,7 @@ const getMockData = (lang: Language): WeatherData => {
       const d = new Date();
       d.setDate(d.getDate() + i);
       const dayName = d.toLocaleDateString(locale, { weekday: 'short' });
-      
+
       return {
         date: d.toISOString().split('T')[0],
         dayName: dayName,
@@ -114,7 +114,7 @@ export const getCoordinates = (): Promise<Coordinates> => {
       reject(new Error("Geolocation not supported"));
       return;
     }
-    
+
     navigator.geolocation.getCurrentPosition(
       (position) => {
         resolve({
@@ -128,7 +128,7 @@ export const getCoordinates = (): Promise<Coordinates> => {
       },
       {
         enableHighAccuracy: true,
-        maximumAge: 0, 
+        maximumAge: 0,
         timeout: 8000
       }
     );
@@ -136,92 +136,92 @@ export const getCoordinates = (): Promise<Coordinates> => {
 };
 
 interface LocationName {
-    city: string;
-    district: string;
+  city: string;
+  district: string;
 }
 
 /**
  * REVERSE GEOCODING - OSM Implementation (Default)
  */
 export const reverseGeocode = async (coords: Coordinates, lang: Language): Promise<LocationName> => {
-    try {
-        const localeParam = lang === Language.ZH ? 'zh-CN' : 'en';
-        const response = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${coords.lat}&lon=${coords.lon}&accept-language=${localeParam}&zoom=14`
-        );
-        if (!response.ok) throw new Error("Geocoding failed");
-        
-        const data = await response.json();
-        const addr = data.address || {};
-        
-        let city = "";
-        let district = "";
+  try {
+    const localeParam = lang === Language.ZH ? 'zh-CN' : 'en';
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${coords.lat}&lon=${coords.lon}&accept-language=${localeParam}&zoom=14`
+    );
+    if (!response.ok) throw new Error("Geocoding failed");
 
-        if (lang === Language.ZH) {
-            city = addr.city || addr.municipality || addr.state || "";
-            district = addr.district || addr.county || addr.town || "";
-            
-            if (district && (district.includes(city) || city.includes(district))) {
-               // clean redundancy if needed
-            }
-            if (!city && district) {
-                city = district;
-                district = "";
-            }
-        } else {
-             city = addr.city || addr.town || "Unknown";
-             district = addr.district || "";
-        }
+    const data = await response.json();
+    const addr = data.address || {};
 
-        return { city, district };
+    let city = "";
+    let district = "";
 
-    } catch (error) {
-        console.warn("OSM Reverse geocoding failed", error);
-        return { city: "Unknown", district: "" };
+    if (lang === Language.ZH) {
+      city = addr.city || addr.municipality || addr.state || "";
+      district = addr.district || addr.county || addr.town || "";
+
+      if (district && (district.includes(city) || city.includes(district))) {
+        // clean redundancy if needed
+      }
+      if (!city && district) {
+        city = district;
+        district = "";
+      }
+    } else {
+      city = addr.city || addr.town || "Unknown";
+      district = addr.district || "";
     }
+
+    return { city, district };
+
+  } catch (error) {
+    console.warn("OSM Reverse geocoding failed", error);
+    return { city: "Unknown", district: "" };
+  }
 };
 
 /**
  * SEARCH CITY - OSM Implementation (Default)
  */
 export const searchCity = async (query: string, lang: Language): Promise<WeatherLocation[]> => {
-    if (!query || query.length < 2) return [];
-    try {
-      const localeParam = lang === Language.ZH ? 'zh-CN' : 'en';
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=8&accept-language=${localeParam}&addressdetails=1`
-      );
-      if (!response.ok) return [];
-      
-      const data = await response.json();
-      return data.map((item: any) => {
-        const addr = item.address || {};
-        let name = "";
-        let district = "";
-        if (lang === Language.ZH) {
-            name = addr.city || addr.municipality || addr.state || item.display_name.split(',')[0];
-            district = addr.district || addr.county || addr.town || "";
-        } else {
-            name = addr.city || addr.town || item.display_name.split(',')[0];
-            district = addr.state || addr.country || "";
-        }
-        return {
-          id: `loc_${item.place_id}`,
-          name: name,
-          district: district,
-          coords: { lat: parseFloat(item.lat), lon: parseFloat(item.lon) },
-          isCurrentLocation: false
-        };
-      });
-    } catch (e) {
-      console.warn("Search failed", e);
-      return [];
-    }
+  if (!query || query.length < 2) return [];
+  try {
+    const localeParam = lang === Language.ZH ? 'zh-CN' : 'en';
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=8&accept-language=${localeParam}&addressdetails=1`
+    );
+    if (!response.ok) return [];
+
+    const data = await response.json();
+    return data.map((item: any) => {
+      const addr = item.address || {};
+      let name = "";
+      let district = "";
+      if (lang === Language.ZH) {
+        name = addr.city || addr.municipality || addr.state || item.display_name.split(',')[0];
+        district = addr.district || addr.county || addr.town || "";
+      } else {
+        name = addr.city || addr.town || item.display_name.split(',')[0];
+        district = addr.state || addr.country || "";
+      }
+      return {
+        id: `loc_${item.place_id}`,
+        name: name,
+        district: district,
+        coords: { lat: parseFloat(item.lat), lon: parseFloat(item.lon) },
+        isCurrentLocation: false
+      };
+    });
+  } catch (e) {
+    console.warn("Search failed", e);
+    return [];
+  }
 };
 
 // --- API FETCHERS ---
 
-const fetchOpenWeatherPollution = async (coords: Coordinates, lang: Language, apiKey: string): Promise<{aqi: number, description: string} | null> => {
+const fetchOpenWeatherPollution = async (coords: Coordinates, lang: Language, apiKey: string): Promise<{ aqi: number, description: string } | null> => {
   try {
     const isZh = lang === Language.ZH;
     const pollutionUrl = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${coords.lat}&lon=${coords.lon}&appid=${apiKey}`;
@@ -229,17 +229,17 @@ const fetchOpenWeatherPollution = async (coords: Coordinates, lang: Language, ap
     if (!res.ok) return null;
     const data = await res.json();
     if (data.list && data.list.length > 0) {
-        const level = data.list[0].main.aqi;
-        let aqiVal = 0;
-        let aqiDesc = isZh ? "未知" : "Unknown";
-        switch (level) {
-            case 1: aqiVal = 30; aqiDesc = isZh ? "优" : "Good"; break;
-            case 2: aqiVal = 70; aqiDesc = isZh ? "良" : "Fair"; break;
-            case 3: aqiVal = 120; aqiDesc = isZh ? "轻度污染" : "Moderate"; break;
-            case 4: aqiVal = 160; aqiDesc = isZh ? "中度污染" : "Poor"; break;
-            case 5: aqiVal = 201; aqiDesc = isZh ? "重度污染" : "Very Poor"; break;
-        }
-        return { aqi: aqiVal, description: aqiDesc };
+      const level = data.list[0].main.aqi;
+      let aqiVal = 0;
+      let aqiDesc = isZh ? "未知" : "Unknown";
+      switch (level) {
+        case 1: aqiVal = 30; aqiDesc = isZh ? "优" : "Good"; break;
+        case 2: aqiVal = 70; aqiDesc = isZh ? "良" : "Fair"; break;
+        case 3: aqiVal = 120; aqiDesc = isZh ? "轻度污染" : "Moderate"; break;
+        case 4: aqiVal = 160; aqiDesc = isZh ? "中度污染" : "Poor"; break;
+        case 5: aqiVal = 201; aqiDesc = isZh ? "重度污染" : "Very Poor"; break;
+      }
+      return { aqi: aqiVal, description: aqiDesc };
     }
   } catch (e) { /* silent fail */ }
   return null;
@@ -253,22 +253,22 @@ const fetchCaiyunData = async (coords: Coordinates, lang: Language, apiKey: stri
     const data = await response.json();
     const r = data.result;
     if (!r) throw new Error('Invalid Caiyun Data');
-    
+
     // ... Parsing Logic Same as Before ...
     const isZh = lang === Language.ZH;
     const locale = isZh ? 'zh-CN' : 'en-US';
-    
+
     // Alerts
     const alerts: WeatherAlert[] = [];
     if (r.alert && r.alert.content) {
-        r.alert.content.forEach((a: any) => {
-            alerts.push({
-                title: a.title,
-                description: a.description,
-                level: 'major',
-                source: a.source
-            });
+      r.alert.content.forEach((a: any) => {
+        alerts.push({
+          title: a.title,
+          description: a.description,
+          level: 'major',
+          source: a.source
         });
+      });
     }
 
     // AQI
@@ -276,14 +276,14 @@ const fetchCaiyunData = async (coords: Coordinates, lang: Language, apiKey: stri
     let aqiDescription = isZh ? "优" : "Good";
     const caiyunAqi = r.realtime?.air_quality?.aqi?.chn;
     if (typeof caiyunAqi === 'number') {
-        aqi = caiyunAqi;
-        aqiDescription = r.realtime?.air_quality?.description?.chn || aqiDescription; 
+      aqi = caiyunAqi;
+      aqiDescription = r.realtime?.air_quality?.description?.chn || aqiDescription;
     } else if (OPENWEATHER_API_KEY) {
-        const owData = await fetchOpenWeatherPollution(coords, lang, OPENWEATHER_API_KEY);
-        if (owData) {
-            aqi = owData.aqi;
-            aqiDescription = owData.description;
-        }
+      const owData = await fetchOpenWeatherPollution(coords, lang, OPENWEATHER_API_KEY);
+      if (owData) {
+        aqi = owData.aqi;
+        aqiDescription = owData.description;
+      }
     }
 
     const dailyTemp = r.daily?.temperature || [];
@@ -292,54 +292,54 @@ const fetchCaiyunData = async (coords: Coordinates, lang: Language, apiKey: stri
 
     let hourlyData: any[] = [];
     if (r.hourly && r.hourly.temperature) {
-        hourlyData = r.hourly.temperature.map((item: any, idx: number) => {
-            const skyconVal = r.hourly.skycon && r.hourly.skycon[idx] ? r.hourly.skycon[idx].value : r.realtime?.skycon;
-            return {
-                time: new Date(item.datetime).getHours() + ':00',
-                temp: item.value,
-                icon: mapCaiyunIcon(skyconVal) as any,
-                pop: 0 
-            };
-        });
+      hourlyData = r.hourly.temperature.map((item: any, idx: number) => {
+        const skyconVal = r.hourly.skycon && r.hourly.skycon[idx] ? r.hourly.skycon[idx].value : r.realtime?.skycon;
+        return {
+          time: new Date(item.datetime).getHours() + ':00',
+          temp: item.value,
+          icon: mapCaiyunIcon(skyconVal) as any,
+          pop: 0
+        };
+      });
     }
     if (hourlyData.length === 0) throw new Error("Partial Data");
 
     return {
-        lastUpdated: Date.now(),
-        current: {
-            temp: r.realtime?.temperature || 0,
-            feelsLike: r.realtime?.apparent_temperature || 0,
-            highTemp: todayHigh || 0,
-            lowTemp: todayLow || 0,
-            condition: r.realtime?.skycon || "Unknown",
-            humidity: (r.realtime?.humidity || 0) * 100,
-            windSpeed: r.realtime?.wind?.speed || 0,
-            pressure: r.realtime?.pressure || 0,
-            uvIndex: r.realtime?.life_index?.ultraviolet?.index || 0,
-            visibility: r.realtime?.visibility || 0,
-            aqi: aqi,
-            aqiDescription: aqiDescription,
-            icon: mapCaiyunIcon(r.realtime?.skycon) as any
-        },
-        hourly: hourlyData,
-        daily: r.daily?.temperature ? r.daily.temperature.map((item: any, idx: number) => {
-            const d = new Date(item.date);
-            const dayName = d.toLocaleDateString(locale, { weekday: 'short' });
-            const dailySkycon = r.daily.skycon && r.daily.skycon[idx] ? r.daily.skycon[idx].value : 'CLEAR_DAY';
-            return {
-                date: item.date,
-                dayName: dayName,
-                minTemp: item.min,
-                maxTemp: item.max,
-                icon: mapCaiyunIcon(dailySkycon) as any,
-                condition: dailySkycon 
-            };
-        }) : [],
-        alerts: alerts
+      lastUpdated: Date.now(),
+      current: {
+        temp: r.realtime?.temperature || 0,
+        feelsLike: r.realtime?.apparent_temperature || 0,
+        highTemp: todayHigh || 0,
+        lowTemp: todayLow || 0,
+        condition: r.realtime?.skycon || "Unknown",
+        humidity: (r.realtime?.humidity || 0) * 100,
+        windSpeed: r.realtime?.wind?.speed || 0,
+        pressure: r.realtime?.pressure || 0,
+        uvIndex: r.realtime?.life_index?.ultraviolet?.index || 0,
+        visibility: r.realtime?.visibility || 0,
+        aqi: aqi,
+        aqiDescription: aqiDescription,
+        icon: mapCaiyunIcon(r.realtime?.skycon) as any
+      },
+      hourly: hourlyData,
+      daily: r.daily?.temperature ? r.daily.temperature.map((item: any, idx: number) => {
+        const d = new Date(item.date);
+        const dayName = d.toLocaleDateString(locale, { weekday: 'short' });
+        const dailySkycon = r.daily.skycon && r.daily.skycon[idx] ? r.daily.skycon[idx].value : 'CLEAR_DAY';
+        return {
+          date: item.date,
+          dayName: dayName,
+          minTemp: item.min,
+          maxTemp: item.max,
+          icon: mapCaiyunIcon(dailySkycon) as any,
+          condition: dailySkycon
+        };
+      }) : [],
+      alerts: alerts
     };
 
   } catch (e) {
-      throw e; // Let the main fallback handle it
+    throw e; // Let the main fallback handle it
   }
 };
 
@@ -350,7 +350,7 @@ const fetchOpenWeatherData = async (coords: Coordinates, lang: Language, apiKey:
 
   const currentUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${coords.lat}&lon=${coords.lon}&appid=${apiKey}&units=${units}&lang=${locale}`;
   const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${coords.lat}&lon=${coords.lon}&appid=${apiKey}&units=${units}&lang=${locale}`;
-  
+
   const [resCurrent, resForecast] = await Promise.all([
     fetch(currentUrl),
     fetch(forecastUrl)
@@ -359,11 +359,11 @@ const fetchOpenWeatherData = async (coords: Coordinates, lang: Language, apiKey:
   let aqiVal = 0;
   let aqiDesc = isZh ? "未知" : "Unknown";
   try {
-      const owData = await fetchOpenWeatherPollution(coords, lang, apiKey);
-      if (owData) {
-          aqiVal = owData.aqi;
-          aqiDesc = owData.description;
-      }
+    const owData = await fetchOpenWeatherPollution(coords, lang, apiKey);
+    if (owData) {
+      aqiVal = owData.aqi;
+      aqiDesc = owData.description;
+    }
   } catch (e) { /* ignore */ }
 
   if (!resCurrent.ok || !resForecast.ok) throw new Error('OpenWeather API Error');
@@ -372,92 +372,108 @@ const fetchOpenWeatherData = async (coords: Coordinates, lang: Language, apiKey:
   const fore = await resForecast.json();
 
   const hourly = fore.list ? fore.list.slice(0, 9).map((item: any) => {
-      const date = new Date(item.dt * 1000);
-      return {
-          time: date.getHours() + ':00',
-          temp: item.main.temp,
-          icon: mapOpenWeatherIcon(item.weather[0].icon),
-          pop: Math.round(item.pop * 100)
-      };
+    const date = new Date(item.dt * 1000);
+    return {
+      time: date.getHours() + ':00',
+      temp: item.main.temp,
+      icon: mapOpenWeatherIcon(item.weather[0].icon),
+      pop: Math.round(item.pop * 100)
+    };
   }) : [];
 
   if (hourly.length === 0) throw new Error("OpenWeather Partial");
 
   const dailyMap = new Map();
   if (fore.list) {
-      fore.list.forEach((item: any) => {
-          const date = new Date(item.dt * 1000).toISOString().split('T')[0];
-          if (!dailyMap.has(date)) {
-              dailyMap.set(date, { temps: [], icons: [], conditions: [], dt: item.dt });
-          }
-          const entry = dailyMap.get(date);
-          entry.temps.push(item.main.temp);
-          entry.icons.push(item.weather[0].icon);
-          entry.conditions.push(item.weather[0].description);
-      });
+    fore.list.forEach((item: any) => {
+      const date = new Date(item.dt * 1000).toISOString().split('T')[0];
+      if (!dailyMap.has(date)) {
+        dailyMap.set(date, { temps: [], icons: [], conditions: [], dt: item.dt });
+      }
+      const entry = dailyMap.get(date);
+      entry.temps.push(item.main.temp);
+      entry.icons.push(item.weather[0].icon);
+      entry.conditions.push(item.weather[0].description);
+    });
   }
 
   const daily = Array.from(dailyMap.values()).slice(0, 7).map((entry: any) => {
-      const minTemp = Math.min(...entry.temps);
-      const maxTemp = Math.max(...entry.temps);
-      const midIndex = Math.floor(entry.icons.length / 2);
-      const d = new Date(entry.dt * 1000);
-      const dayName = d.toLocaleDateString(lang === Language.ZH ? 'zh-CN' : 'en-US', { weekday: 'short' });
-      return {
-          date: d.toISOString().split('T')[0],
-          dayName: dayName,
-          minTemp,
-          maxTemp,
-          icon: mapOpenWeatherIcon(entry.icons[midIndex]),
-          condition: entry.conditions[midIndex]
-      };
+    const minTemp = Math.min(...entry.temps);
+    const maxTemp = Math.max(...entry.temps);
+    const midIndex = Math.floor(entry.icons.length / 2);
+    const d = new Date(entry.dt * 1000);
+    const dayName = d.toLocaleDateString(lang === Language.ZH ? 'zh-CN' : 'en-US', { weekday: 'short' });
+    return {
+      date: d.toISOString().split('T')[0],
+      dayName: dayName,
+      minTemp,
+      maxTemp,
+      icon: mapOpenWeatherIcon(entry.icons[midIndex]),
+      condition: entry.conditions[midIndex]
+    };
   });
 
   return {
-      lastUpdated: Date.now(),
-      current: {
-          temp: curr.main.temp,
-          feelsLike: curr.main.feels_like,
-          highTemp: daily[0]?.maxTemp || curr.main.temp_max,
-          lowTemp: daily[0]?.minTemp || curr.main.temp_min,
-          condition: curr.weather[0].description,
-          humidity: curr.main.humidity,
-          windSpeed: Math.round(curr.wind.speed * 3.6),
-          pressure: curr.main.pressure,
-          uvIndex: 0, 
-          visibility: curr.visibility / 1000,
-          aqi: aqiVal,
-          aqiDescription: aqiDesc,
-          icon: mapOpenWeatherIcon(curr.weather[0].icon)
-      },
-      hourly,
-      daily,
-      alerts: [] 
+    lastUpdated: Date.now(),
+    current: {
+      temp: curr.main.temp,
+      feelsLike: curr.main.feels_like,
+      highTemp: daily[0]?.maxTemp || curr.main.temp_max,
+      lowTemp: daily[0]?.minTemp || curr.main.temp_min,
+      condition: curr.weather[0].description,
+      humidity: curr.main.humidity,
+      windSpeed: Math.round(curr.wind.speed * 3.6),
+      pressure: curr.main.pressure,
+      uvIndex: 0,
+      visibility: curr.visibility / 1000,
+      aqi: aqiVal,
+      aqiDescription: aqiDesc,
+      icon: mapOpenWeatherIcon(curr.weather[0].icon)
+    },
+    hourly,
+    daily,
+    alerts: []
   };
 };
 
 export const fetchWeatherData = async (coords: Coordinates, lang: Language): Promise<WeatherData> => {
+  let data: WeatherData;
+
   // 1. Try Caiyun (Preferred for China)
   if (CAIYUN_API_KEY) {
     try {
-      return await fetchCaiyunData(coords, lang, CAIYUN_API_KEY);
+      data = await fetchCaiyunData(coords, lang, CAIYUN_API_KEY);
     } catch (e) {
-      // Check if it is likely a CORS error (network error with no response status usually)
-      // We suppress the warning for cleaner logs unless it's a specific API error
+      // Try OpenWeather if Caiyun fails
+      if (OPENWEATHER_API_KEY) {
+        try {
+          data = await fetchOpenWeatherData(coords, lang, OPENWEATHER_API_KEY);
+        } catch (e2) {
+          data = getMockData(lang);
+        }
+      } else {
+        data = getMockData(lang);
+      }
     }
-  }
-
-  // 2. Try OpenWeather
-  if (OPENWEATHER_API_KEY) {
+  } else if (OPENWEATHER_API_KEY) {
+    // 2. Try OpenWeather
     try {
-        return await fetchOpenWeatherData(coords, lang, OPENWEATHER_API_KEY);
+      data = await fetchOpenWeatherData(coords, lang, OPENWEATHER_API_KEY);
     } catch (e) {
-        console.warn("OpenWeather API failed, fallback to mock...");
+      data = getMockData(lang);
     }
+  } else {
+    // 3. Fallback to Mock
+    console.log("Using Mock Data");
+    await new Promise(r => setTimeout(r, 600));
+    data = getMockData(lang);
   }
 
-  // 3. Fallback to Mock
-  console.log("Using Mock Data");
-  await new Promise(r => setTimeout(r, 600)); 
-  return getMockData(lang);
+  // Data Sync: Ensure Today's Forecast matches Current Weather description/icon
+  if (data && data.daily && data.daily.length > 0) {
+    data.daily[0].condition = data.current.condition;
+    data.daily[0].icon = data.current.icon;
+  }
+
+  return data;
 };

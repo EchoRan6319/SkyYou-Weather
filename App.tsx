@@ -406,7 +406,7 @@ const App: React.FC = () => {
       <div className="min-h-[100dvh] bg-[#fdfcff] dark:bg-[#030712] pb-[calc(110px+env(safe-area-inset-bottom))] landscape:h-[100dvh] landscape:pb-0 landscape:overflow-hidden">
         <div className="max-w-[1400px] mx-auto w-full px-4 sm:px-6 pt-6 lg:pt-8 animate-fade-in landscape:h-full landscape:flex landscape:flex-col">
 
-          <div className="mb-4 flex-shrink-0 landscape:mb-6">
+          <div className="mb-4 flex-shrink-0 landscape:mb-6 select-none" style={{ touchAction: 'none' }}>
             <h1 className="text-3xl font-medium text-[#1f1f1f] dark:text-gray-200 tracking-tight font-sans leading-tight">SkyYou Weather</h1>
           </div>
 
@@ -417,7 +417,10 @@ const App: React.FC = () => {
                 - Wrapper padding adjusted: 'landscape:pb-4 sm:landscape:pb-6' to match horizontal margin (px-4/px-6).
                   This ensures the bottom gap is equal to the left gap.
             */}
-            <div className="landscape:col-span-5 lg:landscape:col-span-4 landscape:h-full landscape:overflow-y-auto landscape:no-scrollbar">
+            <div
+              className="landscape:col-span-5 lg:landscape:col-span-4 landscape:h-full landscape:overflow-hidden landscape:no-scrollbar select-none"
+              style={{ touchAction: 'none' }}
+            >
               <div className="flex flex-col w-full landscape:min-h-full landscape:pb-4 sm:landscape:pb-6">
                 <WeatherCard
                   data={weather.current}
@@ -461,7 +464,7 @@ const App: React.FC = () => {
 
   return (
     <ErrorBoundary>
-      <div className="font-sans text-gray-900 bg-[#fdfcff] dark:bg-[#030712] min-h-[100dvh] pt-[env(safe-area-inset-top,0px)] landscape:pl-[calc(80px+env(safe-area-inset-left,0px))] transition-colors duration-300">
+      <div className="font-sans text-gray-900 bg-[#fdfcff] dark:bg-[#030712] min-h-[100dvh] landscape:h-[100dvh] landscape:overflow-hidden pt-[env(safe-area-inset-top,0px)] landscape:pl-[calc(80px+env(safe-area-inset-left,0px))] transition-colors duration-300">
         {!isLaunched && <LoadingScreen status={launchStatus} />}
 
         <PermissionModal
@@ -507,20 +510,22 @@ const App: React.FC = () => {
         {isLaunched && (
           <main className="animate-fade-in flex-1">
             {activeTab === 'home' && renderHome()}
-            <div className="max-w-[1400px] mx-auto w-full px-4 sm:px-6 pt-6 lg:pt-8 min-h-[100dvh]">
-              {activeTab === 'locations' && (
-                <LocationsPage
-                  locations={locations}
-                  currentLocationId={currentLocationId}
-                  onSelect={(id) => { setCurrentLocationId(id); setActiveTab('home'); }}
-                  onDelete={handleDeleteLocation}
-                  onAdd={handleAddLocation}
-                />
-              )}
-              {activeTab === 'settings' && (
-                <SettingsPage settings={settings} updateSettings={(s) => setSettings({ ...settings, ...s })} />
-              )}
-            </div>
+            {activeTab !== 'home' && (
+              <div className="max-w-[1400px] mx-auto w-full px-4 sm:px-6 pt-6 lg:pt-8 min-h-[100dvh]">
+                {activeTab === 'locations' && (
+                  <LocationsPage
+                    locations={locations}
+                    currentLocationId={currentLocationId}
+                    onSelect={(id) => { setCurrentLocationId(id); setActiveTab('home'); }}
+                    onDelete={handleDeleteLocation}
+                    onAdd={handleAddLocation}
+                  />
+                )}
+                {activeTab === 'settings' && (
+                  <SettingsPage settings={settings} updateSettings={(s) => setSettings({ ...settings, ...s })} />
+                )}
+              </div>
+            )}
           </main>
         )}
 

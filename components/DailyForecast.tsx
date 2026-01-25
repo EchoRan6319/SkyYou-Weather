@@ -20,14 +20,14 @@ const DailyForecast: React.FC<Props> = ({ data, title, todayLabel }) => {
             className="flex items-center gap-3 hover:bg-[#f0f4fc] dark:hover:bg-gray-900 rounded-2xl p-3 transition-colors group"
           >
             {/* Day Name */}
-            <div className="w-10 sm:w-14 flex-shrink-0">
+            <div className="w-10 sm:w-14 landscape:sm:w-11 flex-shrink-0">
               <span className="font-semibold text-gray-700 dark:text-gray-300 text-sm">
                 {index === 0 ? todayLabel : day.dayName}
               </span>
             </div>
 
             {/* Icon & Condition Text */}
-            <div className="flex items-center gap-3 flex-1 min-w-0">
+            <div className="flex items-center gap-2 sm:gap-3 landscape:gap-1.5 flex-1 min-w-0">
               <div className="text-[#041e49] dark:text-blue-200 flex-shrink-0">
                 <WeatherIcon type={day.icon} size={24} />
               </div>
@@ -37,11 +37,11 @@ const DailyForecast: React.FC<Props> = ({ data, title, todayLabel }) => {
             </div>
 
             {/* Temperature Section */}
-            <div className="flex items-center gap-3 flex-shrink-0">
+            <div className="flex items-center gap-3 landscape:gap-1.5 flex-shrink-0">
               <span className="text-sm font-medium text-gray-400 dark:text-gray-500 w-8 text-right">{Math.round(day.minTemp)}°</span>
 
-              {/* Visual Bar - Hidden on very small screens to prioritize text, visible on sm+ */}
-              <div className="hidden sm:block w-20 h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+              {/* Visual Bar - Hidden on small screens OR landscape mobile, visible on desktop/large tablet */}
+              <div className="hidden sm:block landscape:hidden lg:landscape:block w-20 h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
                 <div className="h-full bg-[#d3e3fd] dark:bg-blue-600/50 group-hover:bg-[#a8c7fa] transition-colors rounded-full" style={{ width: '60%', marginLeft: '20%' }}></div>
               </div>
 
