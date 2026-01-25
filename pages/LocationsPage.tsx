@@ -134,6 +134,8 @@ const LocationsPage: React.FC<Props> = ({ locations, currentLocationId, onSelect
                     onDelete(loc.id);
                   }}
                   className={`p-2 rounded-full ${isSelected ? 'hover:bg-white/20 text-white' : 'hover:bg-gray-100 text-red-500'}`}
+                  title={t.clearData}
+                  aria-label={t.clearData}
                 >
                   <Trash2 size={20} />
                 </button>
