@@ -65,7 +65,7 @@ const LocationsPage: React.FC<Props> = ({ locations, currentLocationId, onSelect
               <button
                 onClick={() => { setIsSearching(false); setQuery(''); }}
                 className="p-2"
-                title={t.skip}
+                aria-label="Close"
               >
                 <X size={20} className="text-gray-500 dark:text-gray-400" />
               </button>

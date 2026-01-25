@@ -37,13 +37,15 @@ interface ErrorBoundaryState {
 }
 
 class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  state: ErrorBoundaryState = { hasError: false, error: null };
+  public state: ErrorBoundaryState = { hasError: false, error: null };
+  public props: ErrorBoundaryProps;
 
   constructor(props: ErrorBoundaryProps) {
     super(props);
+    this.props = props;
   }
 
-  static getDerivedStateFromError(error: any) {
+  static getDerivedStateFromError(error: any): ErrorBoundaryState {
     return { hasError: true, error };
   }
 
@@ -54,7 +56,10 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
           <h1>Something went wrong.</h1>
           <pre>{this.state.error?.toString()}</pre>
           <pre>{this.state.error?.stack}</pre>
-          <button onClick={() => { localStorage.clear(); window.location.reload(); }} className="mt-4 p-2 bg-gray-200">
+          <button
+            onClick={() => { localStorage.clear(); window.location.reload(); }}
+            className="mt-4 p-2 bg-gray-200 text-gray-900 rounded-lg"
+          >
             Clear Data & Reload
           </button>
         </div>
@@ -406,7 +411,7 @@ const App: React.FC = () => {
       <div className="min-h-[100dvh] bg-[#fdfcff] dark:bg-[#030712] pb-[calc(110px+env(safe-area-inset-bottom))] landscape:h-[100dvh] landscape:pb-0 landscape:overflow-hidden">
         <div className="max-w-[1400px] mx-auto w-full px-4 sm:px-6 pt-6 lg:pt-8 animate-fade-in landscape:h-full landscape:flex landscape:flex-col">
 
-          <div className="mb-4 flex-shrink-0 landscape:mb-6 select-none" style={{ touchAction: 'none' }}>
+          <div className="mb-4 flex-shrink-0 landscape:mb-6 select-none touch-none">
             <h1 className="text-3xl font-medium text-[#1f1f1f] dark:text-gray-200 tracking-tight font-sans leading-tight">SkyYou Weather</h1>
           </div>
 
@@ -419,7 +424,6 @@ const App: React.FC = () => {
             */}
             <div
               className="landscape:col-span-5 lg:landscape:col-span-4 landscape:h-full landscape:overflow-hidden landscape:no-scrollbar select-none"
-              style={{ touchAction: 'none' }}
             >
               <div className="flex flex-col w-full landscape:min-h-full landscape:pb-4 sm:landscape:pb-6">
                 <WeatherCard

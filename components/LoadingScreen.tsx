@@ -45,7 +45,7 @@ const LoadingScreen: React.FC<Props> = ({ status = "SkyYou" }) => {
 
       {/* Progress Bar */}
       <div className="absolute bottom-12 w-48 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-        <div className="h-full bg-[#4c8df6] rounded-full animate-[loading_1.5s_ease-in-out_infinite]" style={{ width: '40%' }}></div>
+        <div className="h-full bg-[#4c8df6] rounded-full animate-[loading_1.5s_ease-in-out_infinite] w-[40%]"></div>
       </div>
 
       <style>{`
