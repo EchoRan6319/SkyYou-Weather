@@ -376,7 +376,7 @@ const App: React.FC = () => {
     const displayAlerts = getDisplayAlerts(weather);
 
     return (
-      <div className="min-h-[100dvh] bg-[#f8f9fa] pb-[calc(110px+env(safe-area-inset-bottom))] landscape:h-[100dvh] landscape:pb-0 landscape:pl-[calc(80px+env(safe-area-inset-left,0px))] landscape:overflow-hidden">
+      <div className="min-h-[100dvh] bg-[#f8f9fa] pb-[calc(110px+env(safe-area-inset-bottom))] landscape:h-[100dvh] landscape:pb-0 landscape:overflow-hidden">
         <div className="max-w-[1400px] mx-auto w-full px-4 sm:px-6 pt-6 lg:pt-8 animate-fade-in landscape:h-full landscape:flex landscape:flex-col">
 
           <div className="mb-4 flex-shrink-0 landscape:mb-6">
@@ -434,7 +434,7 @@ const App: React.FC = () => {
 
   return (
     <ErrorBoundary>
-      <div className="font-sans text-gray-900 bg-[#f8f9fa] min-h-[100dvh] pt-[env(safe-area-inset-top,0px)]">
+      <div className="font-sans text-gray-900 bg-[#f8f9fa] min-h-[100dvh] pt-[env(safe-area-inset-top,0px)] landscape:pl-[calc(80px+env(safe-area-inset-left,0px))]">
         {!isLaunched && <LoadingScreen status={launchStatus} />}
 
         <PermissionModal
@@ -481,7 +481,7 @@ const App: React.FC = () => {
         {isLaunched && (
           <main className="animate-fade-in">
             {activeTab === 'home' && renderHome()}
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-4xl mx-auto px-4">
               {activeTab === 'locations' && (
                 <LocationsPage
                   locations={locations}

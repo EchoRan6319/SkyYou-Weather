@@ -82,7 +82,7 @@ const SettingsPage: React.FC<Props> = ({ settings, updateSettings }) => {
   );
 
   return (
-    <div className="flex flex-col min-h-screen px-6 pt-12 pb-[calc(100px+env(safe-area-inset-bottom))] animate-fade-in bg-[#fdfcff] landscape:pb-6 landscape:pl-[80px]">
+    <div className="flex flex-col min-h-screen px-6 pt-12 pb-[calc(100px+env(safe-area-inset-bottom))] animate-fade-in bg-[#fdfcff] landscape:pb-6">
       <h1 className="text-3xl font-medium text-gray-900 mb-8">{t.settings}</h1>
 
       {/* Notification Settings */}
