@@ -4,6 +4,10 @@
 
 ---
 
+<p align="center">
+  <img src="./public/logo.png" width="120" />
+</p>
+
 ## ✨ 核心特性 (Core Features)
 
 *   **🚀 三合一气象引擎**：
