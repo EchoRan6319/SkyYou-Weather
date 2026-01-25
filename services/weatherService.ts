@@ -1,5 +1,5 @@
 
-import { CAIYUN_API_KEY, OPENWEATHER_API_KEY, QWEATHER_API_KEY, QWEATHER_API_HOST } from '../constants';
+import { CAIYUN_API_KEY, OPENWEATHER_API_KEY, QWEATHER_API_KEY, QWEATHER_API_HOST, WeatherSource } from '../constants';
 import { Coordinates, WeatherData, Language, WeatherIconType, WeatherLocation, WeatherAlert } from '../types';
 
 /**
@@ -86,25 +86,25 @@ const getMockData = (lang: Language): WeatherData => {
   return {
     lastUpdated: Date.now(),
     current: {
-      temp: 24,
-      feelsLike: 26,
-      highTemp: 28,
-      lowTemp: 19,
-      condition: isZh ? "多云" : "Partly Cloudy",
-      humidity: 65,
-      windSpeed: 12,
-      pressure: 1012,
-      uvIndex: 4,
-      visibility: 10,
-      aqi: 45,
-      aqiDescription: isZh ? "优" : "Good",
+      temp: 2,
+      feelsLike: -1,
+      highTemp: 5,
+      lowTemp: -3,
+      condition: isZh ? "寒冷多云" : "Cold & Cloudy",
+      humidity: 45,
+      windSpeed: 15,
+      pressure: 1025,
+      uvIndex: 1,
+      visibility: 8,
+      aqi: 75,
+      aqiDescription: isZh ? "良" : "Fair",
       icon: 'partly-cloudy-day'
     },
     hourly: Array.from({ length: 24 }).map((_, i) => ({
       time: `${i}:00`,
-      temp: 20 + Math.round(Math.random() * 8 - 4),
-      icon: i > 6 && i < 18 ? 'clear-day' : 'clear-night',
-      pop: Math.round(Math.random() * 30)
+      temp: 1 + Math.round(Math.random() * 4 - 2),
+      icon: i > 7 && i < 17 ? 'clear-day' : 'clear-night',
+      pop: Math.round(Math.random() * 10)
     })),
     daily: Array.from({ length: 7 }).map((_, i) => {
       const d = new Date();
@@ -114,10 +114,10 @@ const getMockData = (lang: Language): WeatherData => {
       return {
         date: d.toISOString().split('T')[0],
         dayName: dayName,
-        minTemp: 18 + Math.round(Math.random() * 5),
-        maxTemp: 28 + Math.round(Math.random() * 5),
-        icon: (i % 3 === 0 ? 'rain' : 'partly-cloudy-day') as WeatherIconType,
-        condition: i % 3 === 0 ? (isZh ? "小雨" : "Light Rain") : (isZh ? "多云" : "Cloudy")
+        minTemp: -5 + Math.round(Math.random() * 3),
+        maxTemp: 3 + Math.round(Math.random() * 3),
+        icon: (i % 5 === 0 ? 'snow' : 'partly-cloudy-day') as WeatherIconType,
+        condition: i % 5 === 0 ? (isZh ? "小雪" : "Light Snow") : (isZh ? "多云" : "Cloudy")
       };
     }),
     alerts: alerts
@@ -265,10 +265,17 @@ const fetchCaiyunData = async (coords: Coordinates, lang: Language, apiKey: stri
   try {
     const url = `https://api.caiyunapp.com/v2.6/${apiKey}/${coords.lon},${coords.lat}/weather.json?alert=true&dailysteps=7&hourlysteps=24`;
     const response = await fetch(url);
-    if (!response.ok) throw new Error('Caiyun API Error');
+    if (!response.ok) {
+      console.error(`Caiyun HTTP Error: ${response.status}`);
+      throw new Error('Caiyun API Error');
+    }
     const data = await response.json();
+    if (data.status !== "ok") {
+      console.error(`Caiyun Logic Error: ${data.status} for location ${coords.lat},${coords.lon}`);
+      throw new Error(`Caiyun logic failed: ${data.status}`);
+    }
     const r = data.result;
-    if (!r) throw new Error('Invalid Caiyun Data');
+    if (!r) throw new Error('Invalid Caiyun Data Structure');
 
     // ... Parsing Logic Same as Before ...
     const isZh = lang === Language.ZH;
@@ -517,47 +524,88 @@ const fetchQWeatherData = async (coords: Coordinates, lang: Language, apiKey: st
   };
 };
 
-export const fetchWeatherData = async (coords: Coordinates, lang: Language): Promise<WeatherData> => {
+/**
+ * RECENTLY ADDED: Data Fetcher with Manual Source Selection
+ */
+export const fetchWeatherData = async (
+  coords: Coordinates,
+  lang: Language,
+  preferredSource: WeatherSource = WeatherSource.MIXED
+): Promise<WeatherData> => {
   let data: WeatherData | null = null;
 
-  // 1. Try QWeather (New Primary Source for 24h forecast)
-  if (QWEATHER_API_KEY && QWEATHER_API_HOST) {
-    try {
-      data = await fetchQWeatherData(coords, lang, QWEATHER_API_KEY, QWEATHER_API_HOST);
-      console.log("Using QWeather Data");
-    } catch (e) {
-      console.warn("QWeather API failed, trying fallback...", e);
+  // Wrapped fetchers for cleaner fallback logic
+  const tryQWeather = async () => {
+    if (QWEATHER_API_KEY && QWEATHER_API_HOST) {
+      try {
+        const res = await fetchQWeatherData(coords, lang, QWEATHER_API_KEY, QWEATHER_API_HOST);
+        console.log("Using QWeather Data");
+        return res;
+      } catch (e) {
+        console.warn("QWeather API failed", e);
+      }
     }
+    return null;
+  };
+
+  const tryCaiyun = async () => {
+    if (CAIYUN_API_KEY) {
+      try {
+        const res = await fetchCaiyunData(coords, lang, CAIYUN_API_KEY);
+        console.log("Using Caiyun Data");
+        return res;
+      } catch (e) {
+        console.warn("Caiyun API failed", e);
+      }
+    }
+    return null;
+  };
+
+  const tryOpenWeather = async () => {
+    if (OPENWEATHER_API_KEY) {
+      try {
+        const res = await fetchOpenWeatherData(coords, lang, OPENWEATHER_API_KEY);
+        console.log("Using OpenWeather Data");
+        return res;
+      } catch (e) {
+        console.warn("OpenWeather API failed", e);
+      }
+    }
+    return null;
+  };
+
+  // Dispatch based on user selection
+  if (preferredSource === WeatherSource.QWEATHER) {
+    data = await tryQWeather();
+  } else if (preferredSource === WeatherSource.CAIYUN) {
+    data = await tryCaiyun();
+  } else if (preferredSource === WeatherSource.OPENWEATHER) {
+    data = await tryOpenWeather();
+  } else {
+    // MIXED (Default Priority: QWeather > Caiyun > OpenWeather)
+    data = await tryQWeather();
+    if (!data) data = await tryCaiyun();
+    if (!data) data = await tryOpenWeather();
   }
 
-  // 2. Try Caiyun (Secondary)
-  if (!data && CAIYUN_API_KEY) {
-    try {
-      data = await fetchCaiyunData(coords, lang, CAIYUN_API_KEY);
-      console.log("Using Caiyun Data");
-    } catch (e) {
-      // Continue to next
-    }
-  }
+  // --- Strict Fallback Logic ---
+  const anyApiConfigured = !!(QWEATHER_API_KEY || CAIYUN_API_KEY || OPENWEATHER_API_KEY);
 
-  // 3. Try OpenWeather (Tertiary)
-  if (!data && OPENWEATHER_API_KEY) {
-    try {
-      data = await fetchOpenWeatherData(coords, lang, OPENWEATHER_API_KEY);
-      console.log("Using OpenWeather Data");
-    } catch (e) {
-      console.warn("OpenWeather API failed, fallback to mock...");
-    }
-  }
-
-  // 4. Fallback to Mock
   if (!data) {
-    console.log("Using Mock Data");
-    await new Promise(r => setTimeout(r, 600));
-    data = getMockData(lang);
+    if (!anyApiConfigured) {
+      // ONLY use mock if absolutely NO keys are provided
+      console.log("No API keys detected. Entering Dev/Mock mode.");
+      await new Promise(r => setTimeout(r, 600));
+      data = getMockData(lang);
+    } else {
+      // Keys are present but all attempts failed - DO NOT HIDE THIS WITH MOCK DATA
+      const errorMsg = "天气数据获取失败。已配置的 API 可能已达到上限、Key 无效或网络连接异常，请检查设置。";
+      console.error(errorMsg);
+      throw new Error(errorMsg);
+    }
   }
 
-  // Data Sync: Ensure Today's Forecast matches Current Weather description/icon
+  // Data Consistency: Ensure Today's Forecast text/icon matches Current Weather Card
   if (data && data.daily && data.daily.length > 0) {
     data.daily[0].condition = data.current.condition;
     data.daily[0].icon = data.current.icon;

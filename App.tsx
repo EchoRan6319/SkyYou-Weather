@@ -177,6 +177,29 @@ const App: React.FC = () => {
     containers.forEach(el => el.scrollTop = 0);
   }, [activeTab]);
 
+  // Reactive Weather Update when Source changes (Post-launch)
+  useEffect(() => {
+    if (!isLaunched) return;
+
+    const refreshWeather = async () => {
+      const loc = locations.find(l => l.id === currentLocationId);
+      if (loc && loc.coords) {
+        setLoading(true);
+        try {
+          const data = await fetchWeatherData(loc.coords, settings.language, settings.weatherSource);
+          setWeather(data);
+          saveWeatherToCache(currentLocationId, data);
+        } catch (e) {
+          console.error("Source Refresh Failed", e);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    refreshWeather();
+  }, [settings.weatherSource, currentLocationId]);
+
   // --- Initialization Sequence (Splash Screen Logic) ---
   useEffect(() => {
     const initApp = async () => {
@@ -234,7 +257,7 @@ const App: React.FC = () => {
       if (currentCoords) {
         setLaunchStatus("Forecast...");
         try {
-          const data = await fetchWeatherData(currentCoords, settings.language);
+          const data = await fetchWeatherData(currentCoords, settings.language, settings.weatherSource);
           setWeather(data);
           saveWeatherToCache(currentLocationId, data);
         } catch (e) {
@@ -505,7 +528,7 @@ const App: React.FC = () => {
               }));
             });
             // Also trigger weather load if needed
-            fetchWeatherData(coords, Language.ZH).then(data => {
+            fetchWeatherData(coords, settings.language, settings.weatherSource).then(data => {
               setWeather(data);
               saveWeatherToCache(currentLocationId, data);
             });

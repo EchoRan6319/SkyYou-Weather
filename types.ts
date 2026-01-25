@@ -74,6 +74,13 @@ export enum Language {
   ZH = 'zh'
 }
 
+export enum WeatherSource {
+  MIXED = 'mixed',
+  QWEATHER = 'qweather',
+  CAIYUN = 'caiyun',
+  OPENWEATHER = 'openweather'
+}
+
 export interface AppSettings {
   language: Language;
   theme: AppTheme;
@@ -81,4 +88,5 @@ export interface AppSettings {
   enableNotifications: boolean;
   morningReportTime: string; // Format "08:00"
   eveningReportTime: string; // Format "20:00"
+  weatherSource: WeatherSource;
 }

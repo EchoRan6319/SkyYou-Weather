@@ -1,6 +1,6 @@
 
 import React, { useEffect } from 'react';
-import { AppSettings, Language, AppTheme } from '../types';
+import { AppSettings, Language, AppTheme, WeatherSource } from '../types';
 import { TRANSLATIONS } from '../constants';
 import { Languages, Ruler, Bell, Trash2 } from 'lucide-react';
 import { requestNotificationPermission } from '../services/notificationService';
@@ -117,6 +117,36 @@ const SettingsPage: React.FC<Props> = ({ settings, updateSettings }) => {
         )}
       </SettingSection>
 
+      <SettingSection title={t.weatherSource} icon={Ruler}>
+        <div className="p-4 bg-orange-50 dark:bg-orange-900/10 rounded-2xl mb-4 border border-orange-100 dark:border-orange-900/20">
+          <p className="text-orange-800 dark:text-orange-300 text-sm leading-relaxed font-medium">
+            {t.sourceWarning}
+          </p>
+        </div>
+        <div className="space-y-1">
+          <RadioOption
+            label={t.sourceMixed}
+            checked={settings.weatherSource === WeatherSource.MIXED}
+            onClick={() => updateSettings({ weatherSource: WeatherSource.MIXED })}
+          />
+          <RadioOption
+            label={t.sourceQWeather}
+            checked={settings.weatherSource === WeatherSource.QWEATHER}
+            onClick={() => updateSettings({ weatherSource: WeatherSource.QWEATHER })}
+          />
+          <RadioOption
+            label={t.sourceCaiyun}
+            checked={settings.weatherSource === WeatherSource.CAIYUN}
+            onClick={() => updateSettings({ weatherSource: WeatherSource.CAIYUN })}
+          />
+          <RadioOption
+            label={t.sourceOpenWeather}
+            checked={settings.weatherSource === WeatherSource.OPENWEATHER}
+            onClick={() => updateSettings({ weatherSource: WeatherSource.OPENWEATHER })}
+          />
+        </div>
+      </SettingSection>
+
       <SettingSection title={t.theme} icon={Languages}>
         <div className="space-y-1">
           <RadioOption
@@ -182,7 +212,7 @@ const SettingsPage: React.FC<Props> = ({ settings, updateSettings }) => {
       </SettingSection>
 
       <div className="mt-8 text-center">
-        <p className="text-sm text-gray-400 dark:text-gray-500">SkyYou Weather V3.0.0 RC (PWA)</p>
+        <p className="text-sm text-gray-400 dark:text-gray-500">SkyYou Weather V3.1.0 RC (PWA)</p>
         <p className="text-xs text-gray-300 dark:text-gray-600 mt-1">Design inspired by Material You</p>
       </div>
     </div>

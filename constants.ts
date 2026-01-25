@@ -1,5 +1,6 @@
 
-import { WeatherLocation, AppSettings, Language, AppTheme } from './types';
+import { WeatherLocation, AppSettings, Language, AppTheme, WeatherSource } from './types';
+export { WeatherSource };
 
 // ============================================================================
 // API CONFIGURATION
@@ -77,7 +78,14 @@ export const TRANSLATIONS = {
     // PWA
     pwaTitle: "安装应用",
     pwaGuide: "查看 PWA 安装指南",
-    pwaDesc: "为了获得更沉浸的体验以及开启通知功能，建议将本项目安装为应用。"
+    pwaDesc: "为了获得更沉浸的体验以及开启通知功能，建议将本项目安装为应用。",
+    // Weather Source
+    weatherSource: "数据源",
+    sourceMixed: "混合 (推荐)",
+    sourceQWeather: "和风天气",
+    sourceCaiyun: "彩云天气",
+    sourceOpenWeather: "OpenWeather",
+    sourceWarning: "注意：切换至单一数据源可能会由于 API 限制导致部分数据（如 24 小时预报）缺失。"
   }
 };
 
@@ -89,7 +97,8 @@ export const DEFAULT_SETTINGS: AppSettings = {
   theme: AppTheme.SYSTEM,
   enableNotifications: false,
   morningReportTime: "08:00",
-  eveningReportTime: "20:00"
+  eveningReportTime: "20:00",
+  weatherSource: WeatherSource.MIXED
 };
 
 export const DEFAULT_LOCATIONS: WeatherLocation[] = [
