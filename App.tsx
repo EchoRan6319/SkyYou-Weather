@@ -169,6 +169,14 @@ const App: React.FC = () => {
   useEffect(() => { localStorage.setItem(LOCATIONS_STORAGE_KEY, JSON.stringify(locations)); }, [locations]);
   useEffect(() => { localStorage.setItem(CURRENT_LOC_STORAGE_KEY, currentLocationId); }, [currentLocationId]);
 
+  // Reset scroll position when switching tabs to prevent "UI sinking" 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    // Force immediate scroll to top for all possible scrolling containers
+    const containers = document.querySelectorAll('.overflow-y-auto, .overflow-auto, main');
+    containers.forEach(el => el.scrollTop = 0);
+  }, [activeTab]);
+
   // --- Initialization Sequence (Splash Screen Logic) ---
   useEffect(() => {
     const initApp = async () => {
