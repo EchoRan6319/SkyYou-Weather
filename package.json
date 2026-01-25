@@ -1,7 +1,7 @@
 {
   "name": "skyyou-weather",
   "private": true,
-  "version": "2.4.0-rc",
+  "version": "3.0.0-rc",
   "type": "module",
   "scripts": {
     "dev": "vite",

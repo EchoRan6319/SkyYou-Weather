@@ -17,7 +17,7 @@ const BottomNav: React.FC<Props> = ({ activeTab, onTabChange, labels }) => {
 
   return (
     // Landscape: Move to left side, full height, fixed width
-    <div className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none landscape:top-0 landscape:right-auto landscape:w-[calc(80px+env(safe-area-inset-left,0px))] landscape:h-screen landscape:border-r landscape:border-gray-100">
+    <div className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none landscape:top-0 landscape:right-auto landscape:w-[calc(80px+env(safe-area-inset-left,0px))] landscape:h-screen landscape:border-r landscape:border-gray-100 dark:landscape:border-gray-800">
       {/* 
          Fixed: Added 'pb-[calc(8px+env(safe-area-inset-bottom))]' to handle iOS Home Indicator correctly.
          'pb-safe' is not standard in Tailwind CDN.

@@ -8,6 +8,8 @@ import { WeatherLocation, AppSettings, Language, AppTheme } from './types';
 // ============================================================================
 export const CAIYUN_API_KEY = "19o10LzcwHoF3FJY"; // Enter your Caiyun Token
 export const OPENWEATHER_API_KEY = "9393c55a6a2bccb1c47d368d0c42bfba"; // Enter your OpenWeather Key
+export const QWEATHER_API_KEY = "706af34151de4e90aee611ebdf4440f8"; // To be filled by user
+export const QWEATHER_API_HOST = "nr6hevnddn.re.qweatherapi.com"; // To be filled by user
 
 // ============================================================================
 // LOCALIZATION

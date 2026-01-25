@@ -476,7 +476,7 @@ const App: React.FC = () => {
 
   return (
     <ErrorBoundary>
-      <div className="font-sans text-gray-900 bg-[#fdfcff] dark:bg-[#030712] min-h-[100dvh] landscape:h-[100dvh] landscape:overflow-hidden pt-[env(safe-area-inset-top,0px)] landscape:pl-[calc(80px+env(safe-area-inset-left,0px))] transition-colors duration-300">
+      <div className="font-sans text-gray-900 bg-[#fdfcff] dark:bg-[#030712] min-h-[100dvh] landscape:h-[100dvh] landscape:flex landscape:flex-col landscape:overflow-hidden pt-[env(safe-area-inset-top,0px)] landscape:pl-[calc(80px+env(safe-area-inset-left,0px))] transition-colors duration-300">
         {!isLaunched && <LoadingScreen status={launchStatus} />}
 
         <PermissionModal
@@ -520,10 +520,10 @@ const App: React.FC = () => {
         to ensure smooth fade-in, but visibility controls the user experience.
       */}
         {isLaunched && (
-          <main className="animate-fade-in flex-1">
+          <main className="animate-fade-in flex-1 landscape:min-h-0 landscape:overflow-y-auto">
             {activeTab === 'home' && renderHome()}
             {activeTab !== 'home' && (
-              <div className="max-w-[1400px] mx-auto w-full px-4 sm:px-6 pt-6 lg:pt-8 min-h-[100dvh]">
+              <div className="max-w-[1400px] mx-auto w-full px-4 sm:px-6 pt-6 lg:pt-8 min-h-[100dvh] landscape:min-h-0">
                 {activeTab === 'locations' && (
                   <LocationsPage
                     locations={locations}
