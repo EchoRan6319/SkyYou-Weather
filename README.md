@@ -1,4 +1,4 @@
-# SkyYou Weather (V3.1.1 RC)
+# SkyYou Weather
 
 一个极致精美、移动端与桌面端兼备的渐进式 Web 应用 (PWA) 天气追踪器，深度采用 **Material You** 设计语言与响应式布局。
 
@@ -27,7 +27,29 @@
 
 ---
 
-## 🛠️ 技术栈 (Tech Stack)
+## � 界面预览 (Screenshots)
+
+### 📱 移动端 (iOS)
+<p align="center">
+  <img src="./Screenshot/1.jpg" width="30%" />
+  <img src="./Screenshot/2.jpg" width="30%" />
+  <img src="./Screenshot/3.jpg" width="30%" />
+</p>
+
+### 🌙 深色模式 & 横屏适配 (Dark Mode & Landscape)
+<p align="center">
+  <img src="./Screenshot/4.jpg" width="45%" />
+  <img src="./Screenshot/5.jpg" width="45%" />
+</p>
+
+### 💻 桌面端 (Desktop)
+<p align="center">
+  <img src="./Screenshot/6.png" width="95%" />
+</p>
+
+---
+
+## �🛠️ 技术栈 (Tech Stack)
 
 *   **框架**: React 19 + TypeScript 5
 *   **构建**: Vite 6
@@ -61,7 +83,7 @@ npm run dev
 
 ## ⚙️ 关键配置 (Configuration)
 
-为了获得最佳体验，请在 `constants.ts` 中配置及您的私有 API Key：
+为了获得最佳体验，请 in `constants.ts` 中配置及您的私有 API Key：
 
 ```typescript
 // d:\EchoRan\Documents\GitHub\SkyYou-Weather\constants.ts
