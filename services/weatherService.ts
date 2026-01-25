@@ -124,31 +124,44 @@ const getMockData = (lang: Language): WeatherData => {
   };
 };
 
-export const getCoordinates = (): Promise<Coordinates> => {
-  return new Promise((resolve, reject) => {
-    if (!navigator.geolocation) {
-      reject(new Error("Geolocation not supported"));
-      return;
+/**
+ * GET COORDINATES - With IP Fallback for China compatibility
+ */
+export const getCoordinates = async (apiKey?: string): Promise<Coordinates> => {
+  // 1. Try Browser Geolocation (Most precise)
+  const getBrowserCoords = (): Promise<Coordinates> => {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) return reject(new Error("No Geolocation Support"));
+      navigator.geolocation.getCurrentPosition(
+        (pos) => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
+        (err) => reject(err),
+        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+      );
+    });
+  };
+
+  try {
+    return await getBrowserCoords();
+  } catch (e) {
+    console.warn("Browser geolocation failed or timed out, trying IP fallback...", e);
+
+    // 2. Fallback to QWeather IP Lookup (Highly reliable in China)
+    if (apiKey) {
+      try {
+        const res = await fetch(`https://geoapi.qweather.com/v2/city/lookup?location=auto_ip&key=${apiKey}`).then(r => r.json());
+        if (res.code === '200' && res.location?.[0]) {
+          const loc = res.location[0];
+          console.log("Using QWeather IP Geolocation:", loc.name);
+          return { lat: parseFloat(loc.lat), lon: parseFloat(loc.lon) };
+        }
+      } catch (ipErr) {
+        console.error("IP Geolocation failed", ipErr);
+      }
     }
 
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        resolve({
-          lat: position.coords.latitude,
-          lon: position.coords.longitude
-        });
-      },
-      (error) => {
-        console.warn("Geolocation error:", error.message);
-        reject(error);
-      },
-      {
-        enableHighAccuracy: true,
-        maximumAge: 0,
-        timeout: 8000
-      }
-    );
-  });
+    // 3. Final Hardcoded Fallback (Beijing)
+    return { lat: 39.9042, lon: 116.4074 };
+  }
 };
 
 interface LocationName {
@@ -159,13 +172,35 @@ interface LocationName {
 /**
  * REVERSE GEOCODING - OSM Implementation (Default)
  */
-export const reverseGeocode = async (coords: Coordinates, lang: Language): Promise<LocationName> => {
+/**
+ * REVERSE GEOCODING - QWeather + OSM Fallback
+ */
+export const reverseGeocode = async (coords: Coordinates, lang: Language, apiKey?: string): Promise<LocationName> => {
+  const isZh = lang === Language.ZH;
+
+  // 1. Try QWeather GeoAPI (Preferred for China)
+  if (apiKey) {
+    try {
+      const res = await fetch(`https://geoapi.qweather.com/v2/city/lookup?location=${coords.lon.toFixed(2)},${coords.lat.toFixed(2)}&key=${apiKey}&lang=${isZh ? 'zh' : 'en'}`).then(r => r.json());
+      if (res.code === '200' && res.location?.[0]) {
+        const loc = res.location[0];
+        return {
+          city: loc.adm2 || loc.name,
+          district: loc.adm2 === loc.name ? "" : loc.name
+        };
+      }
+    } catch (e) {
+      console.warn("QWeather Reverse Geocoding failed", e);
+    }
+  }
+
+  // 2. Fallback to OSM (International)
   try {
-    const localeParam = lang === Language.ZH ? 'zh-CN' : 'en';
+    const localeParam = isZh ? 'zh-CN' : 'en';
     const response = await fetch(
       `https://nominatim.openstreetmap.org/reverse?format=json&lat=${coords.lat}&lon=${coords.lon}&accept-language=${localeParam}&zoom=14`
     );
-    if (!response.ok) throw new Error("Geocoding failed");
+    if (!response.ok) throw new Error("OSM failed");
 
     const data = await response.json();
     const addr = data.address || {};
@@ -173,17 +208,10 @@ export const reverseGeocode = async (coords: Coordinates, lang: Language): Promi
     let city = "";
     let district = "";
 
-    if (lang === Language.ZH) {
+    if (isZh) {
       city = addr.city || addr.municipality || addr.state || "";
       district = addr.district || addr.county || addr.town || "";
-
-      if (district && (district.includes(city) || city.includes(district))) {
-        // clean redundancy if needed
-      }
-      if (!city && district) {
-        city = district;
-        district = "";
-      }
+      if (!city && district) { city = district; district = ""; }
     } else {
       city = addr.city || addr.town || "Unknown";
       district = addr.district || "";
@@ -192,7 +220,7 @@ export const reverseGeocode = async (coords: Coordinates, lang: Language): Promi
     return { city, district };
 
   } catch (error) {
-    console.warn("OSM Reverse geocoding failed", error);
+    console.warn("All Reverse geocoding failed", error);
     return { city: "Unknown", district: "" };
   }
 };

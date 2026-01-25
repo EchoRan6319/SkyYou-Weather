@@ -11,7 +11,8 @@ import {
 import {
   DEFAULT_LOCATIONS,
   DEFAULT_SETTINGS,
-  TRANSLATIONS
+  TRANSLATIONS,
+  QWEATHER_API_KEY
 } from './constants';
 import { fetchWeatherData, getCoordinates, reverseGeocode } from './services/weatherService';
 import { sendNotification } from './services/notificationService';
@@ -224,7 +225,7 @@ const App: React.FC = () => {
         try {
           setLaunchStatus("Locating...");
 
-          const coords = await getCoordinates();
+          const coords = await getCoordinates(QWEATHER_API_KEY);
           currentCoords = coords;
 
           // Update Locations State immediately
@@ -236,7 +237,7 @@ const App: React.FC = () => {
           }));
 
           // Async: Get address name (don't block critical path too long, but helpful for UI)
-          reverseGeocode(coords, settings.language).then(info => {
+          reverseGeocode(coords, settings.language, QWEATHER_API_KEY).then(info => {
             setLocations(prev => prev.map(loc => {
               if (loc.isCurrentLocation) {
                 return { ...loc, name: info.city || t.currentLocation, district: info.district };
@@ -519,7 +520,7 @@ const App: React.FC = () => {
               if (loc.isCurrentLocation) return { ...loc, coords: coords };
               return loc;
             }));
-            reverseGeocode(coords, Language.ZH).then(info => {
+            reverseGeocode(coords, settings.language, QWEATHER_API_KEY).then(info => {
               setLocations(prev => prev.map(loc => {
                 if (loc.isCurrentLocation) {
                   return { ...loc, name: info.city || t.currentLocation, district: info.district };
