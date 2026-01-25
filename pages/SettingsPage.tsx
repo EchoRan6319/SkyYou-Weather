@@ -157,7 +157,7 @@ const SettingsPage: React.FC<Props> = ({ settings, updateSettings }) => {
       </SettingSection>
 
       <div className="mt-8 text-center">
-        <p className="text-sm text-gray-400">SkyYou Weather v1.2.2 (PWA)</p>
+        <p className="text-sm text-gray-400">SkyYou Weather V2.0.0 RC (PWA)</p>
         <p className="text-xs text-gray-300 mt-1">Design inspired by Material You</p>
       </div>
     </div>
