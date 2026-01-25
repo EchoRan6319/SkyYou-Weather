@@ -27,7 +27,7 @@
 
 ---
 
-## � 界面预览 (Screenshots)
+##  界面预览 (Screenshots)
 
 ### 📱 移动端 (iOS)
 <p align="center">
