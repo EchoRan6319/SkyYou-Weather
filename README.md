@@ -1,112 +1,94 @@
-# SkyYou Weather
-一个精美、移动端优先的渐进式 Web 应用 (PWA) 天气追踪器，采用 **Material You** 设计美学。
+# SkyYou Weather (V3.1.1 RC)
+
+一个极致精美、移动端与桌面端兼备的渐进式 Web 应用 (PWA) 天气追踪器，深度采用 **Material You** 设计语言与响应式布局。
+
 ---
 
-## ✨ 功能特性 (Features)
+## ✨ 核心特性 (Core Features)
 
-*   **全球天气数据**：精准的实时、24小时逐小时和未来7天预报。
-*   **移动端优先设计**：
-    *   专为移动设备优化的响应式布局。
-    *   **悬浮船坞 (Floating Dock)** 导航栏，便于单手拇指操作。
-    *   适配现代全面屏手机（iOS/Android）的安全区域（刘海屏/灵动岛）。
-    *   流畅的动画和过渡效果。
-*   **多城市管理**：
-    *   自动 GPS 定位。
-    *   搜索并保存多个关注城市。
-    *   便捷的城市切换。
-*   **PWA 支持**：可像原生应用一样安装到 iOS 和 Android 设备主屏幕。
-*   **多语言支持**：完美支持简体中文和英语。
-*   **个性化定制**：
-    *   单位切换（公制/英制）。
-    *   主题支持（跟随系统/浅色/深色）。
-    *   早晚天气播报通知。
-*   **数据隐私**：“清除数据”功能可一键重置本地存储。
+*   **🚀 三合一气象引擎**：
+    *   **和风天气 (QWeather)**：首选源，支持完整的 24 小时逐小时预报及实时空气质量 (AQI)。
+    *   **彩云天气 (Caiyun)**：国内精准分钟级降水预报。
+    *   **OpenWeatherMap**：全球高覆盖备用源。
+*   **⚙️ 灵活数据分发器**：内置智能调度逻辑，支持**手动切换数据源**。混合模式（和风 > 彩云 > OpenWeather）确保数据永不断线。
+*   **📱 顶尖移动体验**：
+    *   基于 Material You 的色块化 UI，适配 **iOS 灵动岛/刘海屏**。
+    *   **横屏深度优化**：独立侧边栏导航，面板状态锁定，杜绝手势回弹。
+    *   **PWA 沉浸模式**：支持一键安装至主屏幕，享受原生 App 般的全屏体验与系统级通知。
+*   **💻 桌面操作革命**：
+    *   针对鼠标用户优化的**滚轮横向映射**。在“24小时预报”区域滚动滚轮可直接左右滑动。
+    *   **严格操作隔离**：锁定横向滑动时的纵向溢出，交互手感更纯净。
+*   **🔍 智能城市管理**：
+    *   集成 OSM 地理逆编码，实时定位当前位置。
+    *   支持多城市搜索与持久化保存，随开随看。
+*   **🌓 个性化定制**：
+    *   **主题引擎**：支持深色/浅色/系统同步，采用高质感毛玻璃效果。
+    *   **通知系统**：支持早晚天气播报提醒功能。
 
 ---
 
 ## 🛠️ 技术栈 (Tech Stack)
 
-*   **前端 (Frontend)**: React (v19), TypeScript
-*   **构建工具 (Build Tool)**: Vite
-*   **样式 (Styling)**: Tailwind CSS (via CDN)
-*   **图标 (Icons)**: Lucide React
-*   **数据源 (Data Sources)**:
-    *   彩云天气 (Caiyun Weather) - 国内首选
-    *   OpenWeatherMap - 国际备用
+*   **框架**: React 19 + TypeScript 5
+*   **构建**: Vite 6
+*   **样式**: Tailwind CSS (现代响应式框架)
+*   **图标**: Lucide React
+*   **协议**: PWA (Service Workers + Web App Manifest)
 
 ---
 
-## 🚀 本地部署与开发 (Local Deployment & Development)
+## 🚀 快速启动 (Quick Start)
 
-### 先决条件 (Prerequisites)
+### 1. 环境准备
+确保您的设备已安装 Node.js 环境。
 
-*   已安装 Node.js 环境。
+### 2. 获取代码并安装
+```bash
+git clone https://github.com/EchoRan6319/SkyYou-Weather.git
+cd SkyYou-Weather
+npm install
+```
 
-### 安装步骤 (Installation)
-
-1.  克隆仓库：
-    ```bash
-    git clone https://github.com/YourUsername/SkyYou-Weather.git
-    cd SkyYou-Weather
-    ```
-
-2.  安装依赖：
-    ```bash
-    npm install
-    ```
-
-### 开发模式 (Development)
-
-启动开发服务器：
+### 3. 本地开发
 ```bash
 npm run dev
 ```
 
-#### ⚠️ 移动端测试重要提示 (Mobile Testing Note)
-
-本项目使用了 **地理位置 (Geolocation)** 和 **通知 (Notifications)** 等现代 Web API，这些 API 在 iOS 和 Android 上**必须**在 **安全上下文 (HTTPS)** 下才能运行。
-
-开发服务器已配置为使用自签名 HTTPS 证书：
-1.  运行 `npm run dev`。
-2.  在手机浏览器中打开 `https://<局域网IP>:5173`。
-3.  点击“高级” -> “继续访问” (Proceed) 以接受自签名证书警告。
-
-### 生产环境部署 (Production Build)
-
-如果您想在本地构建生产版本并运行：
-
-1.  **构建项目**：
-    ```bash
-    npm run build
-    ```
-    构建产物将生成在 `dist` 目录中。
-
-2.  **本地预览 (Preview)**：
-    ```bash
-    npm run preview
-    ```
-    这将启动一个本地服务器预览生产构建。
-
-3.  **静态部署**：
-    您可以将 `dist` 目录中的内容部署到任何静态网站托管服务，例如：
-    *   Vercel
-    *   Netlify
-    *   GitHub Pages
-    *   Nginx / Apache
-
-### 配置 API 密钥 (Configuration)
-
-要获取真实天气数据，您需要配置 API 密钥。
-
-1.  打开 `src/constants.ts`。
-2.  替换占位符为你申请的密钥：
-    ```typescript
-    export const CAIYUN_API_KEY = "你的彩云天气Token";
-    export const OPENWEATHER_API_KEY = "你的OpenWeatherKey";
-    ```
+#### ⚠️ 开发者性能提示
+由于使用了 Web API (Geolocation, Notification)，本项目必须在 **安全上下文 (HTTPS)** 下运行。开发服务器已通过 Vite 配置了基本的 HTTPS 支持。
 
 ---
 
-## License
+## ⚙️ 关键配置 (Configuration)
 
-This project is open source and available under the [MIT License](LICENSE).
+为了获得最佳体验，请在 `constants.ts` 中配置及您的私有 API Key：
+
+```typescript
+// d:\EchoRan\Documents\GitHub\SkyYou-Weather\constants.ts
+
+export const QWEATHER_API_KEY = "您的和风天气Key";
+export const QWEATHER_API_HOST = "api.qweather.com"; // 或 devapi.qweather.com
+export const CAIYUN_API_KEY = "您的彩云Token";
+export const OPENWEATHER_API_KEY = "您的OpenWeatherKey";
+```
+
+---
+
+## 📜 更新记录 (Changelog)
+
+### V3.1.1 RC (Current)
+*   **交互补完**：实现 24 小时预报的鼠标滚轮映射与严格滚动隔离。
+*   **视觉修正**：全平台隐藏多余滚动条，优化桌面端布局。
+
+### V3.1.0 RC
+*   **数据源自由**：新增手动切换数据源功能（混合/和风/彩云/OpenWeather）。
+*   **机制固化**：移除 API 失败后的静默假数据回退，代之以真实的异常上报与诊断。
+
+### V3.0.0 RC
+*   **引擎重构**：正式接入和风天气，提供全量 24 小时逐小时预报。
+*   **PWA 增强**：集成官方安装指南链接。
+
+---
+
+## 📄 License
+基于 [MIT License](LICENSE) 开源发布。由 DeepMind Antigravity AI 协同构建。
