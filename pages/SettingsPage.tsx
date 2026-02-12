@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { AppSettings, Language, AppTheme, WeatherSource } from '../types';
 import { TRANSLATIONS } from '../constants';
 import { Languages, Ruler, Bell, Trash2 } from 'lucide-react';
-import { requestNotificationPermission } from '../services/notificationService';
+import { requestNotificationPermission, sendNotification } from '../services/notificationService';
 
 interface Props {
   settings: AppSettings;
@@ -20,6 +20,10 @@ const SettingsPage: React.FC<Props> = ({ settings, updateSettings }) => {
       const granted = await requestNotificationPermission();
       if (granted) {
         updateSettings({ enableNotifications: true });
+        // Send a test notification to confirm
+        setTimeout(() => {
+          sendNotification("通知已开启", { body: "您将收到每日天气播报。" });
+        }, 1000);
       } else {
         // Permission failed or denied
         alert(t.permissionDenied);
@@ -28,6 +32,10 @@ const SettingsPage: React.FC<Props> = ({ settings, updateSettings }) => {
     } else {
       updateSettings({ enableNotifications: false });
     }
+  };
+
+  const handleTestNotification = async () => {
+    await sendNotification("测试通知", { body: "这是一条测试通知，如果您能看到，说明通知功能正常。" });
   };
 
   const SettingSection = ({ title, icon: Icon, children }: any) => (
@@ -103,6 +111,12 @@ const SettingsPage: React.FC<Props> = ({ settings, updateSettings }) => {
 
         {settings.enableNotifications && (
           <div className="space-y-3 mt-4 animate-fade-in">
+            <button
+              onClick={handleTestNotification}
+              className="w-full py-3 px-4 rounded-2xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/30 font-medium active:scale-95 transition-all mb-2"
+            >
+              发送测试通知
+            </button>
             <TimeOption
               label={t.morningReport}
               value={settings.morningReportTime}

@@ -10,13 +10,14 @@ export default defineConfig({
     tailwindcss(),
     react(),
     process.env.NODE_ENV === 'development' ? basicSsl() : null,
-    compression({ algorithm: 'gzip' }),
-    compression({ algorithm: 'brotliCompress' })
+    // 禁用 Android 构建的压缩
+    process.env.BUILD_TARGET !== 'android' ? compression({ algorithm: 'gzip' }) : null,
+    process.env.BUILD_TARGET !== 'android' ? compression({ algorithm: 'brotliCompress' }) : null
   ].filter(Boolean),
   server: {
     host: '0.0.0.0'
   },
-  base: '/SkyYou-Weather/',
+  base: process.env.BUILD_TARGET === 'android' ? '/' : '/SkyYou-Weather/',
   build: {
     rollupOptions: {
       output: {

@@ -13,7 +13,8 @@ import {
   CURRENT_LOC_STORAGE_KEY
 } from './constants';
 import { fetchWeatherData, getCoordinates, reverseGeocode } from './services/weatherService';
-import { sendNotification } from './services/notificationService';
+import { Capacitor } from '@capacitor/core';
+import { sendNotification, scheduleWeatherNotifications } from './services/notificationService';
 import { saveWeatherToCache } from './utils/weatherUtils';
 
 // Components
@@ -193,27 +194,45 @@ const App: React.FC = () => {
   // Notifications
   useEffect(() => {
     if (!settings.enableNotifications || !weather) return;
-    const interval = setInterval(() => {
+
+    // For Native platforms, use OS scheduling (more reliable in background)
+    if (Capacitor.isNativePlatform()) {
+      scheduleWeatherNotifications(settings, weather, t);
+      return;
+    }
+
+    // For Web, use interval polling (only works when tab is active/open)
+    const checkNotifications = () => {
       const now = new Date();
       const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
       const dateKey = `${now.getDate()}-${timeStr}`;
+
       if (lastNotifiedRef.current === dateKey) return;
 
       if (timeStr === settings.morningReportTime) {
         const today = weather.daily[0];
-        sendNotification(t.morningReportTitle, { body: `${t.today}: ${today.condition}, ${Math.round(today.minTemp)}° / ${Math.round(today.maxTemp)}°.` });
-        lastNotifiedRef.current = dateKey;
-      }
-      if (timeStr === settings.eveningReportTime) {
+        if (today) {
+          sendNotification(t.morningReportTitle, { 
+            body: `${t.today}: ${today.condition}, ${Math.round(today.minTemp)}° / ${Math.round(today.maxTemp)}°.` 
+          });
+          lastNotifiedRef.current = dateKey;
+        }
+      } else if (timeStr === settings.eveningReportTime) {
         const tomorrow = weather.daily[1];
         if (tomorrow) {
-          sendNotification(t.eveningReportTitle, { body: `${t.daily}: ${tomorrow.condition}, ${Math.round(tomorrow.minTemp)}° / ${Math.round(tomorrow.maxTemp)}°.` });
+          sendNotification(t.eveningReportTitle, { 
+            body: `${t.daily}: ${tomorrow.condition}, ${Math.round(tomorrow.minTemp)}° / ${Math.round(tomorrow.maxTemp)}°.` 
+          });
           lastNotifiedRef.current = dateKey;
         }
       }
-    }, 30000);
+    };
+
+    checkNotifications();
+    const interval = setInterval(checkNotifications, 60000);
+    
     return () => clearInterval(interval);
-  }, [settings, weather, t]);
+  }, [settings.enableNotifications, settings.morningReportTime, settings.eveningReportTime, weather, t]);
 
   return (
     <ErrorBoundary>

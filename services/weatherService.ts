@@ -3,6 +3,8 @@ import { Coordinates, WeatherData, Language, WeatherIconType, WeatherLocation, W
 import { fetchQWeatherData } from './weatherProviders/qWeather';
 import { fetchCaiyunData } from './weatherProviders/caiyun';
 import { fetchOpenWeatherData } from './weatherProviders/openWeather';
+import { Geolocation } from '@capacitor/geolocation';
+import { Capacitor } from '@capacitor/core';
 
 const fetchOpenWeatherPollution = async (coords: Coordinates, lang: Language, apiKey: string): Promise<{ aqi: number, description: string } | null> => {
   try {
@@ -57,58 +59,101 @@ const getMockData = (lang: Language): WeatherData => {
 };
 
 export const getCoordinates = async (apiKey?: string): Promise<Coordinates> => {
+  const getNativeCoords = async (): Promise<Coordinates> => {
+    const permissions = await Geolocation.checkPermissions();
+    if (permissions.location !== 'granted') {
+      await Geolocation.requestPermissions();
+    }
+    const pos = await Geolocation.getCurrentPosition({
+      enableHighAccuracy: true,
+      timeout: 10000
+    });
+    return { lat: pos.coords.latitude, lon: pos.coords.longitude };
+  };
+
   const getBrowserCoords = (): Promise<Coordinates> => new Promise((resolve, reject) => {
     if (!navigator.geolocation) return reject(new Error("No Geolocation Support"));
     navigator.geolocation.getCurrentPosition(
       (pos) => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
       (err) => reject(err),
-      { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
   });
 
+  // Try Native Geolocation first if on Capacitor
+  if (Capacitor.isNativePlatform()) {
+    try {
+      return await getNativeCoords();
+    } catch (e) {
+      console.warn("Native geolocation failed, falling back", e);
+    }
+  }
+
+  // Try Browser Geolocation
   try {
     return await getBrowserCoords();
   } catch (e) {
+    console.warn("Browser geolocation failed, falling back to IP", e);
     if (apiKey) {
       try {
+        // Use QWeather IP lookup as primary fallback for China
         const res = await fetch(`https://geoapi.qweather.com/v2/city/lookup?location=auto_ip&key=${apiKey}`).then(r => r.json());
-        if (res.code === '200' && res.location?.[0]) return { lat: parseFloat(res.location[0].lat), lon: parseFloat(res.location[0].lon) };
-      } catch (ipErr) { /* fallback */ }
+        if (res.code === '200' && res.location?.[0]) {
+          return { lat: parseFloat(res.location[0].lat), lon: parseFloat(res.location[0].lon) };
+        }
+      } catch (ipErr) {
+        console.warn("IP-based location failed", ipErr);
+      }
     }
+    // Final fallback: Beijing
     return { lat: 39.9042, lon: 116.4074 };
   }
 };
 
 export const reverseGeocode = async (coords: Coordinates, lang: Language, apiKey?: string): Promise<{ city: string; district: string }> => {
   const isZh = lang === Language.ZH;
-  if (apiKey) {
+  const key = apiKey || QWEATHER_API_KEY;
+
+  if (key) {
     try {
-      const res = await fetch(`https://geoapi.qweather.com/v2/city/lookup?location=${coords.lon.toFixed(2)},${coords.lat.toFixed(2)}&key=${apiKey}&lang=${isZh ? 'zh' : 'en'}`).then(r => r.json());
+      const res = await fetch(`https://geoapi.qweather.com/v2/city/lookup?location=${coords.lon.toFixed(2)},${coords.lat.toFixed(2)}&key=${key}&lang=${isZh ? 'zh' : 'en'}`).then(r => r.json());
       if (res.code === '200' && res.location?.[0]) {
-        return { city: res.location[0].adm2 || res.location[0].name, district: res.location[0].adm2 === res.location[0].name ? "" : res.location[0].name };
+        const loc = res.location[0];
+        return {
+          city: loc.adm2 || loc.name,
+          district: loc.adm2 === loc.name ? "" : loc.name
+        };
       }
-    } catch (e) { /* fallback */ }
+    } catch (e) {
+      console.warn("QWeather reverse geocode failed", e);
+    }
   }
-  try {
-    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${coords.lat}&lon=${coords.lon}&accept-language=${isZh ? 'zh-CN' : 'en'}&zoom=14`).then(r => r.json());
-    const addr = res.address || {};
-    let city = isZh ? (addr.city || addr.municipality || addr.state || "") : (addr.city || addr.town || "Unknown");
-    let district = isZh ? (addr.district || addr.county || addr.town || "") : (addr.district || "");
-    if (isZh && !city && district) { city = district; district = ""; }
-    return { city, district };
-  } catch (e) { return { city: "Unknown", district: "" }; }
+
+  return { city: isZh ? "未知位置" : "Unknown", district: "" };
 };
 
 export const searchCity = async (query: string, lang: Language): Promise<WeatherLocation[]> => {
-  if (!query || query.length < 2) return [];
-  try {
-    const data = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=8&accept-language=${lang === Language.ZH ? 'zh-CN' : 'en'}&addressdetails=1`).then(r => r.json());
-    return data.map((item: any) => {
-      const addr = item.address || {};
-      const name = lang === Language.ZH ? (addr.city || addr.municipality || addr.state || item.display_name.split(',')[0]) : (addr.city || addr.town || item.display_name.split(',')[0]);
-      return { id: `loc_${item.place_id}`, name, district: addr.district || addr.county || addr.town || addr.state || "", coords: { lat: parseFloat(item.lat), lon: parseFloat(item.lon) }, isCurrentLocation: false };
-    });
-  } catch (e) { return []; }
+  if (!query || query.length < 1) return [];
+  const isZh = lang === Language.ZH;
+
+  if (QWEATHER_API_KEY) {
+    try {
+      const res = await fetch(`https://geoapi.qweather.com/v2/city/lookup?location=${encodeURIComponent(query)}&key=${QWEATHER_API_KEY}&lang=${isZh ? 'zh' : 'en'}`).then(r => r.json());
+      if (res.code === '200' && res.location) {
+        return res.location.map((item: any) => ({
+          id: `loc_${item.id}`,
+          name: item.name,
+          district: item.adm2 || item.adm1 || "",
+          coords: { lat: parseFloat(item.lat), lon: parseFloat(item.lon) },
+          isCurrentLocation: false
+        }));
+      }
+    } catch (e) {
+      console.warn("QWeather city search failed", e);
+    }
+  }
+
+  return [];
 };
 
 export const fetchWeatherData = async (coords: Coordinates, lang: Language, preferredSource: WeatherSource = WeatherSource.MIXED): Promise<WeatherData> => {
